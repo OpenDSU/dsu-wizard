@@ -44,7 +44,8 @@ function CommandsAssistant(localFolder) {
 	}
 
 	return {
-		addCommand
+		addCommand,
+		loadCommands
 	}
 }
 

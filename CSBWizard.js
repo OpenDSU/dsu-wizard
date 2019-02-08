@@ -5,6 +5,7 @@ const httpUtils = httpWrapper.httpUtils;
 const Server = httpWrapper.Server;
 const crypto = require('pskcrypto');
 const serverCommands = require('./utils/serverCommands');
+const executioner = require('./utils/executioner');
 
 function CSBWizard(listeningPort, rootFolder, callback) {
 	const port = listeningPort || 8081;
@@ -101,8 +102,13 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 
 		server.post('/buildCSB/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
+			executioner.executioner(path.join(rootFolder, transactionId), (err) => {
+				if(err) {
+					res.statusCode = 500;
+				}
 
-
+				res.end();
+			});
 		});
 
 		server.use((req, res) => {
