@@ -20,6 +20,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 			throw err;
 		}
 
+		console.log("Local folder:", rootFolder);
 		registerEndpoints();
 		if(typeof callback === 'function') {
 			callback();

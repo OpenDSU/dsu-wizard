@@ -24,7 +24,7 @@ function executioner(workingDir, callback) {
                 return callback(err);
             }
 
-            dseed = Seed.deriveSeed(seed);
+            dseed = Seed.generateCompactForm(Seed.deriveSeed(seed));
 
             executeCommand(filteredCommands, dseed, workingDir, 0, (err) => {
                 if (err) {
@@ -67,7 +67,6 @@ function judge(command, dseed, workingDir, callback) {
             csbInteraction.attachFile(workingDir, command.params.fileName, dseed, callback);
             break;
         default:
-            console.error('ups');
             return false;
     }
 
