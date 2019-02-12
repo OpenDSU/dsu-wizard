@@ -1,4 +1,7 @@
 const path = require('path');
+
+console.log('IN CSB WIZARD ', path.resolve(__dirname));
+
 const VirtualMQ = require('virtualmq');
 const httpWrapper = VirtualMQ.getHttpWrapper();
 const httpUtils = httpWrapper.httpUtils;
@@ -111,6 +114,8 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 				res.end();
 			});
 		});
+
+		server.use('/demo/*', httpUtils.serveStaticFile(path.join(__dirname, 'demo'), '/demo'));
 
 		server.use((req, res) => {
 			res.statusCode = 404;

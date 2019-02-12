@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSBWizard demo</title>
+
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="side-panel">
+        <a class="box-link" href="/demo/beginCSB.html">Begin CSB</a>
+        <a class="box-link" href="/demo/attachFile.html">Attach file</a>
+        <a class="box-link" href="/demo/addBackup.html">Add backup</a>
+        <a class="box-link" href="/demo/buildCSB.html">Build CSB</a>
+    </div>
+    <div class="content">
+        <form id="backup-adder">
+            <label for="transactionId">Transaction ID:</label><br>
+            <input type="text" name="transactionId" id="transactionId" /><br>
+
+            <label for="backup"> Backup URL:</label><br>
+            <input type="text" name="backup" id="backup"><br><br>
+
+            <input type="button" value="Submit" onclick="addBackup()">
+        </form>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/addBackup.js"></script>
+</body>
+</html>
