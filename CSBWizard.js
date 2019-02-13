@@ -106,12 +106,12 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 
 		server.post('/buildCSB/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
-			executioner.executioner(path.join(rootFolder, transactionId), (err) => {
+			executioner.executioner(path.join(rootFolder, transactionId), (err, seed) => {
 				if(err) {
 					res.statusCode = 500;
+					console.log("Error");
 				}
-
-				res.end();
+				res.end(seed);
 			});
 		});
 

@@ -36,7 +36,7 @@ function executioner(workingDir, callback) {
                         return callback(errors);
                     }
 
-                    callback();
+                    callback(undefined, seed);
                 });
             });
         });
