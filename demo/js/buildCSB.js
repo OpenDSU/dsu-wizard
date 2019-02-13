@@ -11,7 +11,7 @@ function buildCSB() {
         const response = document.createElement('div');
 
         response.innerHTML = `
-        <p> CSB was successfully created</p>
+        <p> CSB was successfully created. The seed is:  ${req.response}</p>
         `;
 
         content.appendChild(response);
