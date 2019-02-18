@@ -1,7 +1,5 @@
 const path = require('path');
 
-console.log('IN CSB WIZARD ', path.resolve(__dirname));
-
 const VirtualMQ = require('virtualmq');
 const httpWrapper = VirtualMQ.getHttpWrapper();
 const httpUtils = httpWrapper.httpUtils;
