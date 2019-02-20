@@ -7,6 +7,7 @@ const Server = httpWrapper.Server;
 const crypto = require('pskcrypto');
 const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
+const QRImage = require('qr-image');
 
 function CSBWizard(listeningPort, rootFolder, callback) {
 	const port = listeningPort || 8081;
@@ -107,9 +108,16 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 			executioner.executioner(path.join(rootFolder, transactionId), (err, seed) => {
 				if(err) {
 					res.statusCode = 500;
-					console.log("Error");
+					console.log("Error", err);
+					res.end();
+					return;
 				}
-				res.end(seed);
+
+				const qr = QRImage.image(seed);
+
+				qr.pipe(res).on('end', () => {
+					res.end();
+				});
 			});
 		});
 
