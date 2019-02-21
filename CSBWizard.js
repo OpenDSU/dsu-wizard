@@ -113,7 +113,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					return;
 				}
 
-				const qr = QRImage.image(seed);
+				const qr = QRImage.image(seed, {type: 'svg'});
 
 				qr.pipe(res).on('end', () => {
 					res.end();

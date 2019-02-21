@@ -9,10 +9,9 @@ function buildCSB() {
         const content = document.getElementsByClassName('content')[0];
 
         const response = document.createElement('div');
+        response.style.maxWidth = '20%';
 
-        response.innerHTML = `
-        <p> CSB was successfully created. The seed is:  ${req.response}</p>
-        `;
+        response.innerHTML = req.response;
 
         content.appendChild(response);
     };
