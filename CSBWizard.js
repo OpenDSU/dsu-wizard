@@ -82,6 +82,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 		});
 
 		server.post('/addBackup/:transactionId', httpUtils.bodyParser);
+
 		server.post('/addBackup/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
 
@@ -121,7 +122,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 			});
 		});
 
-		server.use('/demo/*', httpUtils.serveStaticFile(path.join(__dirname, 'demo'), '/demo'));
+		server.use('/web/*', httpUtils.serveStaticFile(path.join(__dirname, 'web'), '/web'));
 
 		server.use((req, res) => {
 			res.statusCode = 404;

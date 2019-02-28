@@ -9,18 +9,20 @@
 </head>
 <body>
 <div class="container">
-    <div class="side-panel">
-        <a class="box-link" href="/demo/beginCSB.html">Begin CSB</a>
-        <a class="box-link" href="/demo/attachFile.html">Attach file</a>
-        <a class="box-link" href="/demo/addBackup.html">Add backup</a>
-        <a class="box-link" href="/demo/buildCSB.html">Build CSB</a>
+    <div class="side-panel" id="menu_placeholder">
     </div>
     <div class="content">
         <form id="backup-adder">
             <label for="transactionId">Transaction ID:</label><br>
             <input type="text" class="customTextBox" name="transactionId" id="transactionId" /><br><br>
 
-            <input type="button" class="customButton" value="Build CSB" onclick="buildCSB()">
+            <label for="remoteEndpoint">URL:</label><br>
+            <input type="text" class="customTextBox" name="remoteEndpoint" id="remoteEndpoint" /><br><br>
+
+            <label for="publicKey">KEY:</label><br>
+            <input type="text" class="customTextBox" name="publicKey" id="publicKey" /><br><br>
+
+            <input type="button" class="customButton" value="Build CSB" onclick="buildCSBEncSeed()">
         </form>
     </div>
 </div>
@@ -28,4 +30,5 @@
 <script src="js/main.js"></script>
 <script src="js/buildCSB.js"></script>
 </body>
+<script src="js/menu.js"></script>
 </html>

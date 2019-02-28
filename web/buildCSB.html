@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSBWizard demo</title>
+
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="side-panel" id="menu_placeholder">
+    </div>
+    <div class="content">
+        <form id="backup-adder">
+            <label for="transactionId">Transaction ID:</label><br>
+            <input type="text" class="customTextBox" name="transactionId" id="transactionId" /><br><br>
+
+            <input type="button" class="customButton" value="Build CSB" onclick="buildCSB()">
+        </form>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/buildCSB.js"></script>
+</body>
+<script src="js/menu.js"></script>
+</html>
