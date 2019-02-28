@@ -5,6 +5,7 @@ const httpWrapper = VirtualMQ.getHttpWrapper();
 const httpUtils = httpWrapper.httpUtils;
 const Server = httpWrapper.Server;
 const crypto = require('pskcrypto');
+const interact = require('interact');
 const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
 const QRImage = require('qr-image');
@@ -103,7 +104,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 			res.statusCode = 400;
 			res.end('Illegal url, missing transaction id');
 		});
-
+		server.post('/buildCSB/:transactionId', httpUtils.bodyParser);
 		server.post('/buildCSB/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
 			executioner.executioner(path.join(rootFolder, transactionId), (err, seed) => {
@@ -113,12 +114,22 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					res.end();
 					return;
 				}
+				if(req.body){
+					const body = JSON.parse(req.body);
+					const publicKey = body.publicKey;
+					const endpoint = body.endpoint;
+					const alias = body.alias;
+					const channel = body.channel;
+					const ris = interact.createRemoteInteractionSpace(alias, endpoint, channel);
+					ris.startSwarm('notifier', 'init', seed);
+					res.end(seed);
+				}else {
+					const qr = QRImage.image(seed, {type: 'svg'});
 
-				const qr = QRImage.image(seed, {type: 'svg'});
-
-				qr.pipe(res).on('end', () => {
-					res.end();
-				});
+					qr.pipe(res).on('end', () => {
+						res.end();
+					});
+				}
 			});
 		});
 
