@@ -121,8 +121,8 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					const alias = body.alias;
 					const channel = body.channel;
 					const ris = interact.createRemoteInteractionSpace(alias, endpoint, channel);
-					ris.startSwarm('notifier', 'init', seed);
-					res.end(seed);
+					ris.startSwarm('notifier', 'init', seed.toString());
+					res.end(seed.toString());
 				}else {
 					const qr = QRImage.image(seed, {type: 'svg'});
 
