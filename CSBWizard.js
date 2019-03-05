@@ -124,11 +124,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					ris.startSwarm('notifier', 'init', seed.toString());
 					res.end(seed.toString());
 				}else {
-					const qr = QRImage.image(seed, {type: 'svg'});
-
-					qr.pipe(res).on('end', () => {
-						res.end();
-					});
+					res.end(seed.toString());
 				}
 			});
 		});
