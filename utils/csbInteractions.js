@@ -5,7 +5,7 @@ const is = require("interact").createInteractionSpace();
 
 function createCSB(workingDir, backups, callback) {
     let savedSeed;
-    is.startSwarm("createCsb", "withoutPin", "", backups, workingDir).on({
+    is.startSwarm("createCsb", "withoutPin", "", backups, workingDir, false).on({
         printSensitiveInfo: function (seed, defaultPin) {
             savedSeed = seed;
         },
