@@ -3,6 +3,12 @@ function buildCSB() {
     const req = new XMLHttpRequest();
     const transactionId = document.getElementById('transactionId').value;
     const url = `${baseURL}/buildCSB/${transactionId}`;
+    const body = JSON.stringify({
+        url: document.getElementById('endpoint').value,
+        channel: document.getElementById('channel').value
+
+    });
+
 
     req.open("POST", url, true);
     req.onload = function (oEvent) {
@@ -16,5 +22,5 @@ function buildCSB() {
         content.appendChild(response);
     };
 
-    req.send();
+    req.send(body);
 }

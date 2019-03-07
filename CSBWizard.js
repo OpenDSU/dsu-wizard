@@ -114,13 +114,12 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					res.end();
 					return;
 				}
+
 				if(req.body){
 					const body = JSON.parse(req.body);
-					const publicKey = body.publicKey;
-					const endpoint = body.endpoint;
-					const alias = body.alias;
+					const endpoint = body.url;
 					const channel = body.channel;
-					const ris = interact.createRemoteInteractionSpace(alias, endpoint, channel);
+					const ris = interact.createRemoteInteractionSpace('remote', endpoint, channel);
 					ris.startSwarm('notifier', 'init', seed.toString());
 					res.end(seed.toString());
 				}else {
