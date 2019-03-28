@@ -8,7 +8,6 @@ const crypto = require('pskcrypto');
 const interact = require('interact');
 const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
-const QRImage = require('qr-image');
 
 function CSBWizard(listeningPort, rootFolder, callback) {
 	const port = listeningPort || 8081;
@@ -126,6 +125,12 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 					res.end(seed.toString());
 				}
 			});
+		});
+
+		server.use('/web', (req, res) => {
+			res.statusCode = 303;
+			res.setHeader("Location", "index.html");
+			res.end();
 		});
 
 		server.use('/web/*', httpUtils.serveStaticFile(path.join(__dirname, 'web'), '/web'));
