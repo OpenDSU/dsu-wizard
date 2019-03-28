@@ -1,4 +1,8 @@
 function getBaseURL() {
-    return 'http://localhost:8081';
+    const protocol = window.location.protocol;
+    const host = window.location.hostname;
+    const port = window.location.port;
+
+    return `${protocol}//${host}:${port}`;
 }
 
