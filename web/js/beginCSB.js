@@ -3,9 +3,7 @@ function beginCSB() {
     const req = new XMLHttpRequest();
 
     const url = `${baseURL}/beginCSB`;
-
-    console.log('mama are mere ', url);
-
+    
     req.open("POST", url, true);
     req.onload = function (oEvent) {
         const content = document.getElementsByClassName('content')[0];
