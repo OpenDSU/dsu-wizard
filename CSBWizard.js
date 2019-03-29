@@ -8,6 +8,7 @@ const crypto = require('pskcrypto');
 const interact = require('interact');
 const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
+const url = require('url');
 
 function CSBWizard(listeningPort, rootFolder, callback) {
 	const port = listeningPort || 8081;
@@ -116,7 +117,7 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 
 				if(req.body){
 					const body = JSON.parse(req.body);
-					const endpoint = body.url;
+					const endpoint = new url.URL(body.url).origin;
 					const channel = body.channel;
 					const ris = interact.createRemoteInteractionSpace('remote', endpoint, channel);
 					ris.startSwarm('notifier', 'init', seed.toString());

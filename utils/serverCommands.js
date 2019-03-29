@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const url = require('url');
 
 const CommandsAssistant = require("./CommandsAssistant");
 
@@ -30,16 +31,22 @@ function attachFile(workingDir, FileObj, callback) {
 	});
 }
 
-function addBackup(workingDir, backupObj, callback){
-	const cmd = {
-		name: 'addBackup',
-		params: {
-			endpoint: backupObj.endpoint
-		}
-	};
+function addBackup(workingDir, backupObj, callback) {
+	try {
+		let endpoint = new url.URL(backupObj.endpoint).origin;
 
-	const commandAssistant = new CommandsAssistant(workingDir);
-	commandAssistant.addCommand(cmd, callback);
+		const cmd = {
+			name: 'addBackup',
+			params: {
+				endpoint: endpoint
+			}
+		};
+
+		const commandAssistant = new CommandsAssistant(workingDir);
+		commandAssistant.addCommand(cmd, callback);
+	} catch (e) {
+		callback(e);
+	}
 }
 
 module.exports = {
