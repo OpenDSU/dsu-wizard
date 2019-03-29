@@ -129,7 +129,13 @@ function CSBWizard(listeningPort, rootFolder, callback) {
 
 		server.use('/web', (req, res) => {
 			res.statusCode = 303;
-			res.setHeader("Location", "index.html");
+			let redirectLocation = 'index.html';
+
+			if(!req.url.endsWith('/')) {
+				redirectLocation = '/web/' + redirectLocation;
+			}
+
+			res.setHeader("Location", redirectLocation);
 			res.end();
 		});
 
