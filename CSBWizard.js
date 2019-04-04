@@ -10,9 +10,9 @@ const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
 const url = require('url');
 
-function CSBWizard(listeningPort, rootFolder, callback) {
+function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 	const port = listeningPort || 8081;
-	const server = new Server().listen(port);
+	const server = new Server(sslConfig).listen(port);
 	const randSize = 32;
 	rootFolder = path.join(rootFolder, 'CSB_TMP');
 
