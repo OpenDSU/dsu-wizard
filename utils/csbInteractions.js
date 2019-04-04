@@ -5,7 +5,7 @@ const is = require("interact").createInteractionSpace();
 
 function createCSB(workingDir, backups, callback) {
     let savedSeed;
-    is.startSwarm("createCsb", "withoutPin", "", backups, workingDir, false).on({
+    is.startSwarm("createCsb", "withoutPin", "", backups, workingDir, undefined, false).on({
         printSensitiveInfo: function (seed, defaultPin) {
             savedSeed = seed;
         },
@@ -19,7 +19,7 @@ function createCSB(workingDir, backups, callback) {
 }
 
 function attachFile(workingDir, fileName, dseed, callback) {
-    is.startSwarm("attachFile", "withDseed", dseed, fileName, path.join(workingDir, fileName), workingDir).on({
+    is.startSwarm("attachFile", "withCSBIdentifier", dseed, fileName, path.join(workingDir, fileName), workingDir).on({
         handleError: function (err) {
             callback(err);
         },
@@ -31,7 +31,7 @@ function attachFile(workingDir, fileName, dseed, callback) {
 }
 
 function saveBackup(workingDir, dseed, callback) {
-    is.startSwarm("saveBackup", "withDseed", dseed, workingDir).on({
+    is.startSwarm("saveBackup", "withCSBIdentifier", dseed, workingDir).on({
         handleError: function (err) {
             callback(err);
         },
