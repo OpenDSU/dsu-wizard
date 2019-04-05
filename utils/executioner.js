@@ -1,11 +1,11 @@
 const csbInteraction = require('./csbInteractions');
-const Seed = require('pskwallet').Seed;
+const CSBIdentifier = require('pskwallet').CSBIdentifier;
 const CommandsAssistant = require('./CommandsAssistant');
 
 function executioner(workingDir, callback) {
     const filteredCommands = [];
     const backups = [];
-    let dseed;
+    let csbIdentifier;
 
     const commandsAssistant = new CommandsAssistant(workingDir);
     commandsAssistant.loadCommands((err, commands) => {
@@ -24,14 +24,12 @@ function executioner(workingDir, callback) {
                 return callback(err);
             }
 
-            dseed = Seed.generateCompactForm(Seed.deriveSeed(seed));
-
-            executeCommand(filteredCommands, dseed, workingDir, 0, (err) => {
+            executeCommand(filteredCommands, seed, workingDir, 0, (err) => {
                 if (err) {
                     return callback(err);
                 }
 
-                csbInteraction.saveBackup(workingDir, dseed, (errors, successes) => {
+                csbInteraction.saveBackup(workingDir, seed, (errors, successes) => {
                     if (errors) {
                         return callback(errors);
                     }
@@ -43,17 +41,17 @@ function executioner(workingDir, callback) {
     });
 }
 
-function executeCommand(commands, dseed, workingDir, index = 0, callback) {
+function executeCommand(commands, seed, workingDir, index = 0, callback) {
     if (index === commands.length) {
         return callback();
     }
 
-    let match = judge(commands[index], dseed, workingDir, (err) => {
+    let match = judge(commands[index], seed, workingDir, (err) => {
         if (err) {
             return callback(err);
         }
 
-        executeCommand(commands, dseed, workingDir, ++index, callback);
+        executeCommand(commands, seed, workingDir, ++index, callback);
     });
 
     if (!match) {
@@ -61,10 +59,10 @@ function executeCommand(commands, dseed, workingDir, index = 0, callback) {
     }
 }
 
-function judge(command, dseed, workingDir, callback) {
+function judge(command, seed, workingDir, callback) {
     switch (command.name) {
         case 'attachFile':
-            csbInteraction.attachFile(workingDir, command.params.fileName, dseed, callback);
+            csbInteraction.attachFile(workingDir, command.params.fileName, seed, callback);
             break;
         default:
             return false;

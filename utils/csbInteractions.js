@@ -18,8 +18,8 @@ function createCSB(workingDir, backups, callback) {
     });
 }
 
-function attachFile(workingDir, fileName, dseed, callback) {
-    is.startSwarm("attachFile", "withCSBIdentifier", dseed, fileName, path.join(workingDir, fileName), workingDir).on({
+function attachFile(workingDir, fileName, seed, callback) {
+    is.startSwarm("attachFile", "withCSBIdentifier", seed, fileName, path.join(workingDir, fileName), workingDir).on({
         handleError: function (err) {
             callback(err);
         },
@@ -30,8 +30,8 @@ function attachFile(workingDir, fileName, dseed, callback) {
     });
 }
 
-function saveBackup(workingDir, dseed, callback) {
-    is.startSwarm("saveBackup", "withCSBIdentifier", dseed, workingDir).on({
+function saveBackup(workingDir, seed, callback) {
+    is.startSwarm("saveBackup", "withCSBIdentifier", seed, workingDir).on({
         handleError: function (err) {
             callback(err);
         },
