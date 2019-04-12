@@ -37,10 +37,6 @@ function saveBackup(workingDir, seed, callback) {
         },
 
         csbBackupReport: function (result) {
-            if (result.errors.length === 0) {
-                result.errors = undefined;
-            }
-
             callback(result.errors, result.successes);
         }
     });
