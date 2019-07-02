@@ -27,7 +27,7 @@ function sendBlobToUrl(url, blob) {
     req.send(blob);
 }
 
-function readFile() { //TODO: Unused function
+function readFile() {
     const file    = document.getElementById('fileToUpload').files[0];
     const transactionId = document.getElementById('transactionId').value;
 
