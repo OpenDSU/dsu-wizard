@@ -1,8 +1,8 @@
 require('psk-http-client');
 
-const interact = require('interact');
+// const interact = require('interact');
 // interact.enableRemoteInteractions();
-const url = "http://localhost:8081/beginCSB";
+// const url = "http://localhost:8081/beginCSB";
 
 $$.swarm.describe("receive", {
 	start: function () {
@@ -12,6 +12,6 @@ $$.swarm.describe("receive", {
 			}
 
 			console.log("seed", res);
-		})
+		});
 	}
 });

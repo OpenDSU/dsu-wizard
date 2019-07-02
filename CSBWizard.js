@@ -26,7 +26,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 		console.log("Local folder:", rootFolder);
 		registerEndpoints();
 		if(typeof callback === 'function') {
-			callback();
+			return callback();
 		}
 	});
 
@@ -74,7 +74,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 				}
 
 				res.end();
-			})
+			});
 		});
 
 		server.post('/addBackup', (req, res) => {

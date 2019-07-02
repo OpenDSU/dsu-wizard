@@ -1,14 +1,15 @@
 const csbInteraction = require('./csbInteractions');
-const CSBIdentifier = require('pskwallet').CSBIdentifier;
 const CommandsAssistant = require('./CommandsAssistant');
 
 function executioner(workingDir, callback) {
     const filteredCommands = [];
     const backups = [];
-    let csbIdentifier;
 
     const commandsAssistant = new CommandsAssistant(workingDir);
     commandsAssistant.loadCommands((err, commands) => {
+        if (err) {
+            console.log();
+        }
         for (let i = 0; i < commands.length; ++i) {
             if (commands[i].name === 'addBackup') {
                 backups.push(commands[i].params.endpoint);
@@ -46,7 +47,7 @@ function executeCommand(commands, seed, workingDir, index = 0, callback) {
         return callback();
     }
 
-    let match = judge(commands[index], seed, workingDir, (err) => {
+    const match = judge(commands[index], seed, workingDir, (err) => {
         if (err) {
             return callback(err);
         }

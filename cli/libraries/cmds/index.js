@@ -1,3 +1,3 @@
 module.exports = $$.library(function () {
-	require('./cmds')
+	require('./cmds');
 });

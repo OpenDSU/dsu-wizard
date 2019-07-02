@@ -17,8 +17,8 @@ function CommandsAssistant(localFolder) {
 				}
 
 				callback(undefined, JSON.parse(commands.toString()));
-			})
-		})
+			});
+		});
 	}
 
 	function saveCommands(commandsArr, callback) {
@@ -28,7 +28,7 @@ function CommandsAssistant(localFolder) {
 			}
 
 			fs.writeFile(filePath, JSON.stringify(commandsArr), callback);
-		})
+		});
 	}
 
 	function addCommand(command, callback) {
@@ -46,7 +46,7 @@ function CommandsAssistant(localFolder) {
 	return {
 		addCommand,
 		loadCommands
-	}
+	};
 }
 
 module.exports = CommandsAssistant;

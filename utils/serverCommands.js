@@ -33,7 +33,7 @@ function attachFile(workingDir, FileObj, callback) {
 
 function addBackup(workingDir, backupObj, callback) {
 	try {
-		let endpoint = new url.URL(backupObj.endpoint).origin;
+		const endpoint = new url.URL(backupObj.endpoint).origin;
 
 		const cmd = {
 			name: 'addBackup',
@@ -45,7 +45,7 @@ function addBackup(workingDir, backupObj, callback) {
 		const commandAssistant = new CommandsAssistant(workingDir);
 		commandAssistant.addCommand(cmd, callback);
 	} catch (e) {
-		callback(e);
+		return callback(e);
 	}
 }
 

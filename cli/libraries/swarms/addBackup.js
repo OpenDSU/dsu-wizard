@@ -1,6 +1,4 @@
 require('psk-http-client');
-const fs = require('fs');
-const path = require('path');
 const url = "http://localhost:8081/addBackup";
 
 $$.swarm.describe("addBackup", {
@@ -11,6 +9,6 @@ $$.swarm.describe("addBackup", {
 			}
 
 			console.log(backupUrl, "has been added.");
-		})
+		});
 	}
 });

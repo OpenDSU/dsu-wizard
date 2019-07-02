@@ -14,6 +14,6 @@ $$.swarm.describe("attachFile", {
 			}
 
 			console.log(alias, "has been added.");
-		})
+		});
 	}
 });

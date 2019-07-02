@@ -1,11 +1,10 @@
 require('psk-http-client');
 
 const url = "http://localhost:8081/buildCSB";
-const interact = require('interact');
 
 $$.swarm.describe("buildCSBViaVMQ", {
 	start: function (transactionId, endpoint, alias, channel) {
-		let publicKey = '';
+		const publicKey = '';
 		const body = JSON.stringify({
 			publicKey,
 			endpoint,
@@ -20,7 +19,6 @@ $$.swarm.describe("buildCSBViaVMQ", {
 				throw err;
 			}
 			$$.remote.createRequestManager(1000);
-			//const ris = interact.createRemoteInteractionSpace(alias, endpoint, channel);
 			$$.remote.newEndPoint(alias, endpoint, channel);
 
 
@@ -39,6 +37,6 @@ $$.swarm.describe("buildCSBViaVMQ", {
 				$$.remote[alias].off("*", "*");
 			});
 
-		})
+		});
 	}
 });

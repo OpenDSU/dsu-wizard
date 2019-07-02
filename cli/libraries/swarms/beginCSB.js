@@ -11,6 +11,6 @@ $$.swarm.describe("beginCSB", {
 			}
 
 			console.log(res);
-		})
+		});
 	}
 });

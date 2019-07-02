@@ -8,8 +8,7 @@ $$.swarm.describe("buildCSB", {
 			if (err) {
 				throw err;
 			}
-
 			console.log("CSB has been built.");
-		})
+		});
 	}
 });
