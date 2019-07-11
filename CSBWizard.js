@@ -1,5 +1,5 @@
 const path = require('path');
-
+const fs = require('fs');
 const VirtualMQ = require('virtualmq');
 const httpWrapper = VirtualMQ.getHttpWrapper();
 const httpUtils = httpWrapper.httpUtils;
@@ -18,7 +18,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 
 	console.log("Listening on port:", port);
 
-	$$.ensureFolderExists(rootFolder, (err) => {
+	fs.mkdir(rootFolder, {recursive: true}, (err) => {
 		if(err) {
 			throw err;
 		}
@@ -41,8 +41,8 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 
 		server.post('/beginCSB', (req, res) => {
 			const transactionId = crypto.randomBytes(randSize).toString('hex');
-			$$.ensureFolderExists(path.join(rootFolder, transactionId), (err) => {
-				if(err) {
+			fs.mkdir(path.join(rootFolder, transactionId), {recursive: true}, (err) => {
+				if (err) {
 					res.statusCode = 500;
 					res.end();
 					return;
