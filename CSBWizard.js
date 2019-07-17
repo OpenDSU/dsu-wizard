@@ -115,16 +115,17 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 					return;
 				}
 
-				if(req.body){
-					const body = JSON.parse(req.body);
+				const body = JSON.parse(req.body);
+
+				if(body.url !== '' && body.channel !== '') {
 					const endpoint = new url.URL(body.url).origin;
 					const channel = body.channel;
 					const ris = interact.createRemoteInteractionSpace('remote', endpoint, channel);
 					ris.startSwarm('notifier', 'init', seed.toString());
-					res.end(seed.toString());
-				}else {
-					res.end(seed.toString());
 				}
+
+				res.end(seed.toString());
+
 			});
 		});
 
