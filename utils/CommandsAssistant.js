@@ -6,7 +6,7 @@ function CommandsAssistant(localFolder) {
 	const filePath = path.join(localFolder, 'commands.json');
 
 	function loadCommands(callback) {
-		$$.ensureFolderExists(localFolder, (err) => {
+		fs.mkdir(localFolder, {recursive: true}, (err) => {
 			if (err) {
 				return callback(err);
 			}
@@ -22,7 +22,7 @@ function CommandsAssistant(localFolder) {
 	}
 
 	function saveCommands(commandsArr, callback) {
-		$$.ensureFolderExists(localFolder, (err) => {
+		fs.mkdir(localFolder, {recursive: true}, (err) => {
 			if (err) {
 				return callback(err);
 			}
