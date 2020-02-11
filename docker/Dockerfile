@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:12.14.0
 
 RUN git clone https://github.com/PrivateSky/psk-release.git
 
