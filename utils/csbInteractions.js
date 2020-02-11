@@ -1,5 +1,4 @@
 const path = require('path');
-$$.loadLibrary("flows", require("../../pskwallet/libraries/flows"));
 const is = require("interact").createInteractionSpace();
 
 
