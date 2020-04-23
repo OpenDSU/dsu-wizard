@@ -32,7 +32,7 @@ const flow = $$.flow.describe('testAttachFile', {
         });
     },
 
-    createCSB: function (callback) {
+    createRawDossier: function (callback) {
         csbInteractions.createCSB(csbFolder, "http://localhost:8080", (err, seed) => {
             assert.false(err, "Error creating CSB: " + (err && err.message));
             assert.true(seed, "Seed is undefined");
@@ -49,13 +49,13 @@ const flow = $$.flow.describe('testAttachFile', {
     },
 
     attachSingleFile: function (callback) {
-        csbInteractions.attachFile(csbFolder, fileName, this.seed, (err) => {
+        csbInteractions.addFile(csbFolder, fileName, this.seed, (err) => {
             assert.false(err, 'Error attaching single file ' + (err && err.message));
             callback();
         })
     },
     attachSameNameFile: function (callback) {
-        csbInteractions.attachFile(csbFolder, fileName , this.seed, (err) => {
+        csbInteractions.addFile(csbFolder, fileName , this.seed, (err) => {
             assert.true(err, 'Error missing when attaching a file with an existing name ');
             callback();
         })
@@ -77,7 +77,7 @@ const flow = $$.flow.describe('testAttachFile', {
             return;
         }
 
-        csbInteractions.attachFile(csbFolder, fileName + index , this.seed, (err) => {
+        csbInteractions.addFile(csbFolder, fileName + index , this.seed, (err) => {
             assert.false(err, 'Error missing when attaching file in sequence with number ' + index);
             this.attachMultipleFiles(++index, callback);
         });

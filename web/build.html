@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CSBWizard demo</title>
+    <title>DossierWizard demo</title>
 
     <link rel="stylesheet" href="css/reset.css"/>
     <link rel="stylesheet" href="css/main.css"/>
@@ -15,15 +15,7 @@
         <form id="backup-adder">
             <label for="transactionId">Transaction ID:</label><br>
             <input type="text" class="customTextBox" name="transactionId" id="transactionId" /><br><br>
-
-            <label for="endpoint">URL:</label><br>
-            <input type="text" class="customTextBox" name="endpoint" id="endpoint" /><br><br>
-
-
-            <label for="channel">Channel:</label><br>
-            <input type="text" class="customTextBox" name="channel" id="channel" /><br><br>
-
-            <input type="button" class="customButton" value="Build CSB" onclick="buildCSB()">
+            <input type="button" class="customButton" value="Build dossier" onclick="build()">
 
 
         </form>
@@ -31,7 +23,7 @@
 </div>
 
 <script src="js/main.js"></script>
-<script src="js/buildCSB.js"></script>
+<script src="js/build.js"></script>
 </body>
 <script src="js/menu.js"></script>
 </html>

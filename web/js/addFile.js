@@ -2,7 +2,7 @@ function uploadFile(file, transactionId, fileName) {
     const reader  = new FileReader();
 
     reader.addEventListener("load", function () {
-        sendBlobToUrl(`${getBaseURL()}/attachFile/${transactionId}/${fileName}`, reader.result);
+        sendBlobToUrl(`${getBaseURL()}/addFile/${transactionId}/${fileName}`, reader.result);
     }, false);
 
     if (file) {

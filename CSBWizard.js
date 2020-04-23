@@ -5,17 +5,16 @@ const httpWrapper = VirtualMQ.getHttpWrapper();
 const httpUtils = httpWrapper.httpUtils;
 const Server = httpWrapper.Server;
 const crypto = require('pskcrypto');
-const interact = require('interact');
 const serverCommands = require('./utils/serverCommands');
 const executioner = require('./utils/executioner');
 const url = require('url');
 
 function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 	const port = listeningPort || 8081;
-	const server = new Server(sslConfig).listen(port);
+	const server = new Server(sslConfig);
+	server.listen(port);
 	const randSize = 32;
 	rootFolder = path.join(rootFolder, 'CSB_TMP');
-
 	console.log("Listening on port:", port);
 
 	fs.mkdir(rootFolder, {recursive: true}, (err) => {
@@ -39,7 +38,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			next();
 		});
 
-		server.post('/beginCSB', (req, res) => {
+		server.post('/begin', (req, res) => {
 			const transactionId = crypto.randomBytes(randSize).toString('hex');
 			fs.mkdir(path.join(rootFolder, transactionId), {recursive: true}, (err) => {
 				if (err) {
@@ -52,19 +51,19 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			});
 		});
 
-		server.post('/attachFile', (req, res) => {
+		server.post('/addFile', (req, res) => {
 			res.statusCode = 400;
 			res.end('Illegal url, missing transaction id');
 		});
 
-		server.post('/attachFile/:transactionId/:fileAlias', (req, res) => {
+		server.post('/addFile/:transactionId/:fileAlias', (req, res) => {
 			const transactionId = req.params.transactionId;
 			const fileObj = {
 				fileName: req.params.fileAlias,
 				stream: req
 			};
 
-			serverCommands.attachFile(path.join(rootFolder, transactionId), fileObj, (err) => {
+			serverCommands.addFile(path.join(rootFolder, transactionId), fileObj, (err) => {
 				if(err) {
 					if(err.code === 'EEXIST') {
 						res.statusCode = 409;
@@ -77,21 +76,21 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			});
 		});
 
-		server.post('/addBackup', (req, res) => {
+		server.post('/addEndpoint', (req, res) => {
 			res.statusCode = 400;
 			res.end('Illegal url, missing transaction id');
 		});
 
-		server.post('/addBackup/:transactionId', httpUtils.bodyParser);
+		server.post('/addEndpoint/:transactionId', httpUtils.bodyParser);
 
-		server.post('/addBackup/:transactionId', (req, res) => {
+		server.post('/addEndpoint/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
 
 			const backupObj = {
 				endpoint: req.body
 			};
 
-			serverCommands.addBackup(path.join(rootFolder, transactionId), backupObj, (err) => {
+			serverCommands.addEndpoint(path.join(rootFolder, transactionId), backupObj, (err) => {
 				if(err) {
 					res.statusCode = 500;
 				}
@@ -100,12 +99,12 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			});
 		});
 
-		server.post('/buildCSB', (req, res) => {
+		server.post('/build', (req, res) => {
 			res.statusCode = 400;
 			res.end('Illegal url, missing transaction id');
 		});
-		server.post('/buildCSB/:transactionId', httpUtils.bodyParser);
-		server.post('/buildCSB/:transactionId', (req, res) => {
+		server.post('/build/:transactionId', httpUtils.bodyParser);
+		server.post('/build/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
 			executioner.executioner(path.join(rootFolder, transactionId), (err, seed) => {
 				if(err) {
@@ -114,16 +113,6 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 					res.end();
 					return;
 				}
-
-				const body = JSON.parse(req.body);
-
-				if(body.url !== '' && body.channel !== '') {
-					const endpoint = new url.URL(body.url).origin;
-					const channel = body.channel;
-					const ris = interact.createRemoteInteractionSpace('remote', endpoint, channel);
-					ris.startSwarm('notifier', 'init', seed.toString());
-				}
-
 				res.end(seed.toString());
 
 			});
@@ -141,7 +130,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			res.end();
 		});
 
-		server.use('/web/*', httpUtils.serveStaticFile(path.join(__dirname, 'web'), '/web'));
+		server.use('/web/*', httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/csb-wizard/web'), '/web'));
 
 		server.use((req, res) => {
 			res.statusCode = 404;

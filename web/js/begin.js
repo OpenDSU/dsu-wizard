@@ -1,10 +1,9 @@
-function addBackup() {
+function begin() {
     const baseURL = getBaseURL();
     const req = new XMLHttpRequest();
-    const transactionId = document.getElementById('transactionId').value;
-    const url = `${baseURL}/addBackup/${transactionId}`;
-    const backup = document.getElementById('backup').value;
 
+    const url = `${baseURL}/begin`;
+    
     req.open("POST", url, true);
     req.onload = function (oEvent) {
         const content = document.getElementsByClassName('content')[0];
@@ -12,11 +11,11 @@ function addBackup() {
         const response = document.createElement('div');
 
         response.innerHTML = `
-        <p> The url was ${backup} successfully added </p>
+        <p> Keep this transaction it for subsequent requests: ${req.response} </p>
         `;
 
         content.appendChild(response);
     };
 
-    req.send(backup);
+    req.send();
 }

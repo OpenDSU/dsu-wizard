@@ -1,26 +1,25 @@
-const csbInteraction = require('./csbInteractions');
+const dossierOperations = require('./dossierOperations');
 const CommandsAssistant = require('./CommandsAssistant');
 
 function executioner(workingDir, callback) {
     const filteredCommands = [];
-    const backups = [];
+    let endpoint;
 
     const commandsAssistant = new CommandsAssistant(workingDir);
     commandsAssistant.loadCommands((err, commands) => {
         if (err) {
-            console.log();
+            return callback(err);
         }
         for (let i = 0; i < commands.length; ++i) {
-            if (commands[i].name === 'addBackup') {
-                backups.push(commands[i].params.endpoint);
+            if (commands[i].name === 'addEndpoint') {
+                endpoint = commands[i].params.endpoint;
                 continue;
             }
 
             filteredCommands.push(commands[i]);
         }
 
-
-        csbInteraction.createCSB(workingDir, backups, (err, seed) => {
+        dossierOperations.createRawDossier(endpoint, (err, seed) => {
             if (err) {
                 return callback(err);
             }
@@ -30,13 +29,7 @@ function executioner(workingDir, callback) {
                     return callback(err);
                 }
 
-                csbInteraction.saveBackup(workingDir, seed, (errors, successes) => {
-                    if (errors) {
-                        return callback(errors);
-                    }
-
-                    callback(undefined, seed);
-                });
+                callback(undefined, seed);
             });
         });
     });
@@ -62,8 +55,8 @@ function executeCommand(commands, seed, workingDir, index = 0, callback) {
 
 function judge(command, seed, workingDir, callback) {
     switch (command.name) {
-        case 'attachFile':
-            csbInteraction.attachFile(workingDir, command.params.fileName, seed, callback);
+        case 'addFile':
+            dossierOperations.addFile(workingDir, command.params.fileName, seed, callback);
             break;
         default:
             return false;

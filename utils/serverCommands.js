@@ -4,9 +4,9 @@ const url = require('url');
 
 const CommandsAssistant = require("./CommandsAssistant");
 
-function attachFile(workingDir, FileObj, callback) {
+function addFile(workingDir, FileObj, callback) {
 	const cmd = {
-		name: 'attachFile',
+		name: 'addFile',
 		params: {
 			fileName: FileObj.fileName
 		}
@@ -31,12 +31,11 @@ function attachFile(workingDir, FileObj, callback) {
 	});
 }
 
-function addBackup(workingDir, backupObj, callback) {
+function addEndpoint(workingDir, endpointObj, callback) {
 	try {
-		const endpoint = new url.URL(backupObj.endpoint).origin;
-
+		const endpoint = new url.URL(endpointObj.endpoint).origin;
 		const cmd = {
-			name: 'addBackup',
+			name: 'addEndpoint',
 			params: {
 				endpoint: endpoint
 			}
@@ -50,6 +49,6 @@ function addBackup(workingDir, backupObj, callback) {
 }
 
 module.exports = {
-	attachFile,
-	addBackup
+	addFile,
+	addEndpoint
 };
