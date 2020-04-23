@@ -85,12 +85,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 
 		server.post('/addEndpoint/:transactionId', (req, res) => {
 			const transactionId = req.params.transactionId;
-
-			const backupObj = {
-				endpoint: req.body
-			};
-
-			serverCommands.addEndpoint(path.join(rootFolder, transactionId), backupObj, (err) => {
+			serverCommands.setEndpoint(path.join(rootFolder, transactionId), req.body, (err) => {
 				if(err) {
 					res.statusCode = 500;
 				}

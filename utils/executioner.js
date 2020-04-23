@@ -1,51 +1,43 @@
 const dossierOperations = require('./dossierOperations');
-const CommandsAssistant = require('./CommandsAssistant');
+const TransactionManager = require('./TransactionManager');
 
 function executioner(workingDir, callback) {
-    const filteredCommands = [];
-    let endpoint;
-
-    const commandsAssistant = new CommandsAssistant(workingDir);
-    commandsAssistant.loadCommands((err, commands) => {
+    const manager = new TransactionManager(workingDir);
+    manager.loadTransaction((err, transaction) => {
         if (err) {
             return callback(err);
         }
-        for (let i = 0; i < commands.length; ++i) {
-            if (commands[i].name === 'addEndpoint') {
-                endpoint = commands[i].params.endpoint;
-                continue;
-            }
-
-            filteredCommands.push(commands[i]);
+        let archive;
+        try {
+            archive = dossierOperations.createArchive(transaction.endpoint);
+        } catch (e) {
+            return callback(e);
         }
 
-        dossierOperations.createRawDossier(endpoint, (err, seed) => {
+        executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
             if (err) {
                 return callback(err);
             }
 
-            executeCommand(filteredCommands, seed, workingDir, 0, (err) => {
-                if (err) {
-                    return callback(err);
-                }
-
-                callback(undefined, seed);
-            });
+            callback(undefined, archive.getSeed());
         });
     });
 }
 
-function executeCommand(commands, seed, workingDir, index = 0, callback) {
+function executeCommand(commands, archive, workingDir, index = 0, callback) {
+    if (!Array.isArray(commands)) {
+        return callback(Error(`No commands`));
+    }
     if (index === commands.length) {
         return callback();
     }
 
-    const match = judge(commands[index], seed, workingDir, (err) => {
+    const match = judge(commands[index], archive, workingDir, (err) => {
         if (err) {
             return callback(err);
         }
 
-        executeCommand(commands, seed, workingDir, ++index, callback);
+        executeCommand(commands, archive, workingDir, ++index, callback);
     });
 
     if (!match) {
@@ -53,11 +45,12 @@ function executeCommand(commands, seed, workingDir, index = 0, callback) {
     }
 }
 
-function judge(command, seed, workingDir, callback) {
+function judge(command, archive, workingDir, callback) {
     switch (command.name) {
         case 'addFile':
-            dossierOperations.addFile(workingDir, command.params.fileName, seed, callback);
+            dossierOperations.addFile(workingDir, command.params.fileName, archive, callback);
             break;
+
         default:
             return false;
     }
