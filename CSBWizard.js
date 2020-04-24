@@ -125,7 +125,7 @@ function CSBWizard({listeningPort, rootFolder, sslConfig}, callback) {
 			res.end();
 		});
 
-		server.use('/web/*', httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/csb-wizard/web'), '/web'));
+		server.use('/web/*', httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dossier-wizard/web'), '/web'));
 
 		server.use((req, res) => {
 			res.statusCode = 404;
