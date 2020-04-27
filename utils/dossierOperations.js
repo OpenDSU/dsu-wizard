@@ -6,9 +6,9 @@ function createArchive(endpoint) {
     return archive;
 }
 
-function addFile(workingDir, fileName, archive, callback) {
+function addFile(workingDir, dossierPath, archive, callback) {
     const path = require("path");
-    archive.addFile(path.join(workingDir, fileName), fileName, callback);
+    archive.addFile(path.join(workingDir, path.basename(dossierPath)), dossierPath, callback);
 }
 
 module.exports = {

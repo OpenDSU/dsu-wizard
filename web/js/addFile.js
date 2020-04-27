@@ -1,8 +1,8 @@
-function uploadFile(file, transactionId, fileName) {
+function uploadFile(file, transactionId, dossierPath) {
     const reader  = new FileReader();
 
     reader.addEventListener("load", function () {
-        sendBlobToUrl(`${getBaseURL()}/addFile/${transactionId}/${fileName}`, reader.result);
+        sendBlobToUrl(`${getBaseURL()}/addFile/${transactionId}`, reader.result, dossierPath);
     }, false);
 
     if (file) {
@@ -10,10 +10,11 @@ function uploadFile(file, transactionId, fileName) {
     }
 }
 
-function sendBlobToUrl(url, blob) {
+function sendBlobToUrl(url, blob, dossierPath) {
 
     const req = new XMLHttpRequest();
     req.open("POST", url, true);
+    req.setRequestHeader("x-dossier-path", dossierPath);
     req.onload = function (oEvent) {
         const response = document.createElement('div');
 
@@ -30,6 +31,7 @@ function sendBlobToUrl(url, blob) {
 function readFile() {
     const file    = document.getElementById('fileToUpload').files[0];
     const transactionId = document.getElementById('transactionId').value;
+    const dossierPath = document.getElementById('dossierPath').value;
 
-    uploadFile(file, transactionId, file.name);
+    uploadFile(file, transactionId, dossierPath + '/' + file.name);
 }

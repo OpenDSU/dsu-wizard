@@ -8,12 +8,12 @@ function addFile(workingDir, FileObj, callback) {
     const cmd = {
         name: 'addFile',
         params: {
-            fileName: FileObj.fileName
+            dossierPath: FileObj.dossierPath
         }
     };
 
     const manager = new TransactionManager(workingDir);
-    const filePath = path.join(workingDir, FileObj.fileName);
+    const filePath = path.join(workingDir, path.basename(FileObj.dossierPath));
     fs.access(filePath, (err) => {
         if (!err) {
             const e = new Error('File already exists');

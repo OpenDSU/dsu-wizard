@@ -48,7 +48,7 @@ function executeCommand(commands, archive, workingDir, index = 0, callback) {
 function judge(command, archive, workingDir, callback) {
     switch (command.name) {
         case 'addFile':
-            dossierOperations.addFile(workingDir, command.params.fileName, archive, callback);
+            dossierOperations.addFile(workingDir, command.params.dossierPath, archive, callback);
             break;
 
         default:

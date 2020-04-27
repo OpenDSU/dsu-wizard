@@ -31,7 +31,6 @@ function DossierWizardMiddleware(server){
 				res.end();
 				return;
 			}
-			console.log("About to send transaction Id", transactionId);
 
 			res.end(transactionId);
 		});
@@ -42,10 +41,10 @@ function DossierWizardMiddleware(server){
 		res.end('Illegal url, missing transaction id');
 	});
 
-	server.post(`${URL_PREFIX}/addFile/:transactionId/:fileAlias`, (req, res) => {
+	server.post(`${URL_PREFIX}/addFile/:transactionId`, (req, res) => {
 		const transactionId = req.params.transactionId;
 		const fileObj = {
-			fileName: req.params.fileAlias,
+			dossierPath: req.headers["x-dossier-path"],
 			stream: req
 		};
 
