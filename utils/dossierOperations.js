@@ -2,8 +2,7 @@ const EDFS = require("edfs");
 
 function createArchive(endpoint) {
     const edfs = EDFS.attachToEndpoint(endpoint);
-    let archive = edfs.createBar();
-    return archive;
+    return edfs.createRawDossier();
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
@@ -11,7 +10,12 @@ function addFile(workingDir, dossierPath, archive, callback) {
     archive.addFile(path.join(workingDir, path.basename(dossierPath)), dossierPath, callback);
 }
 
+function mount(workingDir, mountPath, mountName, seed, archive, callback) {
+    archive.mount(mountPath, mountName, seed, false, callback);
+}
+
 module.exports = {
     addFile,
-    createArchive
+    createArchive,
+    mount
 };

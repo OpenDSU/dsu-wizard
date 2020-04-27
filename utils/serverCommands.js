@@ -49,7 +49,21 @@ function setEndpoint(workingDir, endpointObj, callback) {
     });
 }
 
+function mount(workingDir, mountPoint, callback) {
+    const cmd = {
+        name: 'mount',
+        params: {
+            mountPath: path.dirname(mountPoint.mountPath),
+            mountName: path.basename(mountPoint.mountPath),
+            seed: mountPoint.seed
+        }
+    };
+
+    const manager = new TransactionManager(workingDir);
+    manager.addCommand(cmd, callback);
+}
 module.exports = {
     addFile,
-    setEndpoint
+    setEndpoint,
+    mount
 };

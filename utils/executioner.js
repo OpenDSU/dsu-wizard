@@ -51,6 +51,10 @@ function judge(command, archive, workingDir, callback) {
             dossierOperations.addFile(workingDir, command.params.dossierPath, archive, callback);
             break;
 
+        case 'mount':
+            dossierOperations.mount(workingDir, command.params.mountPath, command.params.mountName, command.params.seed, archive, callback);
+            break;
+
         default:
             return false;
     }
