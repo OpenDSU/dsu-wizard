@@ -60,14 +60,14 @@ function DossierWizardMiddleware(server) {
         });
     });
 
-    server.post(`${URL_PREFIX}/addEndpoint`, (req, res) => {
+    server.post(`${URL_PREFIX}/setEndpoint`, (req, res) => {
         res.statusCode = 400;
         res.end('Illegal url, missing transaction id');
     });
 
-    server.post(`${URL_PREFIX}/addEndpoint/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, httpUtils.bodyParser);
 
-    server.post(`${URL_PREFIX}/addEndpoint/:transactionId`, (req, res) => {
+    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, (req, res) => {
         const transactionId = req.params.transactionId;
         serverCommands.setEndpoint(path.join(server.rootFolder, transactionId), req.body, (err) => {
             if (err) {

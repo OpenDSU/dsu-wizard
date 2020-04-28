@@ -1,8 +1,8 @@
-function addEndpoint() {
+function setEndpoint() {
     const baseURL = getBaseURL();
     const req = new XMLHttpRequest();
     const transactionId = document.getElementById('transactionId').value;
-    const url = `${baseURL}/addEndpoint/${transactionId}`;
+    const url = `${baseURL}/setEndpoint/${transactionId}`;
     const endpoint = document.getElementById('endpoint').value;
 
     req.open("POST", url, true);
