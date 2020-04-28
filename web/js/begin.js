@@ -11,7 +11,7 @@ function begin() {
         const response = document.createElement('div');
 
         response.innerHTML = `
-        <p> Keep this transaction it for subsequent requests: ${req.response} </p>
+        <p> Keep this transaction id for subsequent requests: ${req.response} </p>
         `;
 
         content.appendChild(response);
