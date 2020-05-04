@@ -1,5 +1,5 @@
 if (!process.env.PSK_ROOT_INSTALATION_FOLDER) {
     process.env.PSK_ROOT_INSTALATION_FOLDER = path.resolve("." + __dirname + "/../..");
 }
-module.exports.getDossierWizardMiddleware = require("./DossierWizardMiddleware");
+module.exports = require("./DossierWizardMiddleware");
 
