@@ -3,7 +3,7 @@ const URL_PREFIX = "/dossierWizard";
 function DossierWizardMiddleware(server) {
     const path = require('path');
     const fs = require('fs');
-    const VirtualMQ = require('virtualmq');
+    const VirtualMQ = require('psk-webserver');
     const httpWrapper = VirtualMQ.getHttpWrapper();
     const httpUtils = httpWrapper.httpUtils;
     const crypto = require('pskcrypto');
