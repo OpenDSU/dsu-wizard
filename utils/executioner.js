@@ -14,13 +14,19 @@ function executioner(workingDir, callback) {
             return callback(e);
         }
 
-        executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
+        archive.load((err) => {
             if (err) {
                 return callback(err);
             }
 
-            callback(undefined, archive.getSeed());
-        });
+            executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
+                if (err) {
+                    return callback(err);
+                }
+
+                callback(undefined, archive.getSeed());
+            });
+        })
     });
 }
 
