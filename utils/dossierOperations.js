@@ -10,8 +10,8 @@ function addFile(workingDir, dossierPath, archive, callback) {
     archive.addFile(path.join(workingDir, path.basename(dossierPath)), dossierPath, callback);
 }
 
-function mount(workingDir, mountPath, mountName, seed, archive, callback) {
-    archive.mount(mountPath, mountName, seed, false, callback);
+function mount(workingDir, path, seed, archive, callback) {
+    archive.mount(path, seed, false, callback);
 }
 
 module.exports = {

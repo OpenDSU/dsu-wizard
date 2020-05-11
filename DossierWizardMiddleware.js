@@ -86,7 +86,7 @@ function DossierWizardMiddleware(server) {
     server.post(`${URL_PREFIX}/mount/:transactionId`, (req, res) => {
         const transactionId = req.params.transactionId;
         const mountPoint = {
-            mountPath: req.headers['x-mount-path'],
+            path: req.headers['x-mount-path'],
             seed: req.headers['x-mounted-dossier-seed']
         };
 

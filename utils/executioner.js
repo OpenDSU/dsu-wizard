@@ -52,7 +52,7 @@ function judge(command, archive, workingDir, callback) {
             break;
 
         case 'mount':
-            dossierOperations.mount(workingDir, command.params.mountPath, command.params.mountName, command.params.seed, archive, callback);
+            dossierOperations.mount(workingDir, command.params.path, command.params.seed, archive, callback);
             break;
 
         default:
