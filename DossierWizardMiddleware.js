@@ -11,7 +11,8 @@ function DossierWizardMiddleware(server) {
     const executioner = require('./utils/executioner');
 
     const randSize = 32;
-    server.use(`${URL_PREFIX}/*`, function (req, res, next) {
+
+    function setHeaders(req, res, next) {
         res.setHeader('Access-Control-Allow-Origin', '*');
 
         // Request methods you wish to allow
@@ -20,9 +21,9 @@ function DossierWizardMiddleware(server) {
         // Request headers you wish to allow
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Content-Length, X-Content-Length');
         next();
-    });
+    }
 
-    server.post(`${URL_PREFIX}/begin`, (req, res) => {
+    function beginSession(req, res) {
         const transactionId = crypto.randomBytes(randSize).toString('hex');
         fs.mkdir(path.join(server.rootFolder, transactionId), {recursive: true}, (err) => {
             if (err) {
@@ -33,14 +34,14 @@ function DossierWizardMiddleware(server) {
 
             res.end(transactionId);
         });
-    });
+    }
 
-    server.post(`${URL_PREFIX}/addFile`, (req, res) => {
+    function sendError(req, res) {
         res.statusCode = 400;
         res.end('Illegal url, missing transaction id');
-    });
+    }
 
-    server.post(`${URL_PREFIX}/addFile/:transactionId`, (req, res) => {
+    function addFileToDossier(req, res) {
         const transactionId = req.params.transactionId;
         const fileObj = {
             dossierPath: req.headers["x-dossier-path"],
@@ -58,16 +59,9 @@ function DossierWizardMiddleware(server) {
 
             res.end();
         });
-    });
+    }
 
-    server.post(`${URL_PREFIX}/setEndpoint`, (req, res) => {
-        res.statusCode = 400;
-        res.end('Illegal url, missing transaction id');
-    });
-
-    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, httpUtils.bodyParser);
-
-    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, (req, res) => {
+    function setDossierEndpoint(req, res) {
         const transactionId = req.params.transactionId;
         serverCommands.setEndpoint(path.join(server.rootFolder, transactionId), req.body, (err) => {
             if (err) {
@@ -76,14 +70,9 @@ function DossierWizardMiddleware(server) {
 
             res.end();
         });
-    });
+    }
 
-    server.post(`${URL_PREFIX}/mount`, (req, res) => {
-        res.statusCode = 400;
-        res.end('Illegal url, missing transaction id');
-    });
-
-    server.post(`${URL_PREFIX}/mount/:transactionId`, (req, res) => {
+    function mount(req, res) {
         const transactionId = req.params.transactionId;
         const mountPoint = {
             path: req.headers['x-mount-path'],
@@ -99,14 +88,9 @@ function DossierWizardMiddleware(server) {
             }
             res.end();
         });
-    });
+    }
 
-    server.post(`${URL_PREFIX}/build`, (req, res) => {
-        res.statusCode = 400;
-        res.end('Illegal url, missing transaction id');
-    });
-    server.post(`${URL_PREFIX}/build/:transactionId`, httpUtils.bodyParser);
-    server.post(`${URL_PREFIX}/build/:transactionId`, (req, res) => {
+    function buildDossier(req, res) {
         const transactionId = req.params.transactionId;
         executioner.executioner(path.join(server.rootFolder, transactionId), (err, seed) => {
             if (err) {
@@ -118,9 +102,10 @@ function DossierWizardMiddleware(server) {
             res.end(seed.toString());
 
         });
-    });
+    }
 
-    server.use(`${URL_PREFIX}`, (req, res) => {
+    function redirect(req, res) {
+        console.log("Redirect called");
         res.statusCode = 303;
         let redirectLocation = 'index.html';
 
@@ -130,14 +115,31 @@ function DossierWizardMiddleware(server) {
 
         res.setHeader("Location", redirectLocation);
         res.end();
-    });
+    }
+
+    server.use(`${URL_PREFIX}/*`, setHeaders);
+
+    server.post(`${URL_PREFIX}/begin`, beginSession);
+
+    server.post(`${URL_PREFIX}/addFile`, sendError);
+    server.post(`${URL_PREFIX}/addFile/:transactionId`, addFileToDossier);
+
+    server.post(`${URL_PREFIX}/setEndpoint`, sendError);
+    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, setDossierEndpoint);
+
+    server.post(`${URL_PREFIX}/mount`, sendError);
+    server.post(`${URL_PREFIX}/mount/:transactionId`, mount);
+
+    server.post(`${URL_PREFIX}/build`, sendError);
+    server.post(`${URL_PREFIX}/build/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/build/:transactionId`, buildDossier);
+
+    server.use(`${URL_PREFIX}`, redirect);
 
     server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dossier-wizard/web'), `${URL_PREFIX}/`));
 
-    server.use((req, res) => {
-        res.statusCode = 404;
-        res.end();
-    });
+    server.use(sendError);
 }
 
 module.exports = DossierWizardMiddleware;
