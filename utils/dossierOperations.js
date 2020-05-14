@@ -1,8 +1,8 @@
 const EDFS = require("edfs");
 
-function createArchive(endpoint) {
+function createArchive(endpoint, callback) {
     const edfs = EDFS.attachToEndpoint(endpoint);
-    return edfs.createRawDossier();
+    edfs.createRawDossier(callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {

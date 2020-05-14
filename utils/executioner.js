@@ -7,14 +7,7 @@ function executioner(workingDir, callback) {
         if (err) {
             return callback(err);
         }
-        let archive;
-        try {
-            archive = dossierOperations.createArchive(transaction.endpoint);
-        } catch (e) {
-            return callback(e);
-        }
-
-        archive.load((err) => {
+        dossierOperations.createArchive(transaction.endpoint, (err, archive) => {
             if (err) {
                 return callback(err);
             }
