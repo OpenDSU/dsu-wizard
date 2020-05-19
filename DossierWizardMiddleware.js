@@ -138,8 +138,6 @@ function DossierWizardMiddleware(server) {
     server.use(`${URL_PREFIX}`, redirect);
 
     server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dossier-wizard/web'), `${URL_PREFIX}/`));
-
-    server.use(sendError);
 }
 
 module.exports = DossierWizardMiddleware;
