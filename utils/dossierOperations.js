@@ -1,8 +1,19 @@
 const EDFS = require("edfs");
 
-function createArchive(endpoint, callback) {
+function createArchive(endpoint, seedKey, callback) {
+    if (typeof seedKey === "function") {
+        callback = seedKey;
+        seedKey = undefined;
+    }
     const edfs = EDFS.attachToEndpoint(endpoint);
-    edfs.createRawDossier(callback);
+    if (typeof seedKey !== "undefined") {
+        const barModule = require("bar");
+        const Seed = barModule.Seed;
+        const seed = new Seed(undefined, endpoint, seedKey);
+        edfs.loadRawDossier(seed.getCompactForm(), callback)
+    } else {
+        edfs.createRawDossier(callback);
+    }
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {

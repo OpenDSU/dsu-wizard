@@ -1,4 +1,5 @@
 const URL_PREFIX = "/dossierWizard";
+const dossierWizardStorage = "dossier-wizard-storage";
 
 function DossierWizardMiddleware(server) {
     const path = require('path');
@@ -9,7 +10,6 @@ function DossierWizardMiddleware(server) {
     const crypto = require('pskcrypto');
     const serverCommands = require('./utils/serverCommands');
     const executioner = require('./utils/executioner');
-
     const randSize = 32;
 
     function setHeaders(req, res, next) {
@@ -25,7 +25,7 @@ function DossierWizardMiddleware(server) {
 
     function beginSession(req, res) {
         const transactionId = crypto.randomBytes(randSize).toString('hex');
-        fs.mkdir(path.join(server.rootFolder, transactionId), {recursive: true}, (err) => {
+        fs.mkdir(path.join(server.rootFolder, dossierWizardStorage, transactionId), {recursive: true}, (err) => {
             if (err) {
                 res.statusCode = 500;
                 res.end();
@@ -33,6 +33,17 @@ function DossierWizardMiddleware(server) {
             }
 
             res.end(transactionId);
+        });
+    }
+
+    function setSeedKey(req, res) {
+        const transactionId = req.params.transactionId;
+        serverCommands.setSeedKey(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
+            if (err) {
+                res.statusCode = 500;
+            }
+
+            res.end();
         });
     }
 
@@ -48,7 +59,7 @@ function DossierWizardMiddleware(server) {
             stream: req
         };
 
-        serverCommands.addFile(path.join(server.rootFolder, transactionId), fileObj, (err) => {
+        serverCommands.addFile(path.join(server.rootFolder, dossierWizardStorage, transactionId), fileObj, (err) => {
             if (err) {
                 if (err.code === 'EEXIST') {
                     res.statusCode = 409;
@@ -63,7 +74,7 @@ function DossierWizardMiddleware(server) {
 
     function setDossierEndpoint(req, res) {
         const transactionId = req.params.transactionId;
-        serverCommands.setEndpoint(path.join(server.rootFolder, transactionId), req.body, (err) => {
+        serverCommands.setEndpoint(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
             if (err) {
                 res.statusCode = 500;
             }
@@ -79,7 +90,7 @@ function DossierWizardMiddleware(server) {
             seed: req.headers['x-mounted-dossier-seed']
         };
 
-        serverCommands.mount(path.join(server.rootFolder, transactionId), mountPoint, (err) => {
+        serverCommands.mount(path.join(server.rootFolder, dossierWizardStorage, transactionId), mountPoint, (err) => {
             if (err) {
                 res.statusCode = 500;
                 console.log("Error", err);
@@ -92,7 +103,7 @@ function DossierWizardMiddleware(server) {
 
     function buildDossier(req, res) {
         const transactionId = req.params.transactionId;
-        executioner.executioner(path.join(server.rootFolder, transactionId), (err, seed) => {
+        executioner.executioner(path.join(server.rootFolder, dossierWizardStorage, transactionId), (err, seed) => {
             if (err) {
                 res.statusCode = 500;
                 console.log("Error", err);
@@ -105,7 +116,6 @@ function DossierWizardMiddleware(server) {
     }
 
     function redirect(req, res) {
-        console.log("Redirect called");
         res.statusCode = 303;
         let redirectLocation = 'index.html';
 
@@ -120,6 +130,9 @@ function DossierWizardMiddleware(server) {
     server.use(`${URL_PREFIX}/*`, setHeaders);
 
     server.post(`${URL_PREFIX}/begin`, beginSession);
+
+    server.post(`${URL_PREFIX}/setSeedKey/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/setSeedKey/:transactionId`, setSeedKey);
 
     server.post(`${URL_PREFIX}/addFile`, sendError);
     server.post(`${URL_PREFIX}/addFile/:transactionId`, addFileToDossier);

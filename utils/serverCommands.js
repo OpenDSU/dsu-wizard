@@ -4,6 +4,17 @@ const url = require('url');
 
 const TransactionManager = require("./TransactionManager");
 
+function setSeedKey(workingDir, seedKey, callback) {
+    const manager = new TransactionManager(workingDir);
+    manager.loadTransaction((err, transaction) => {
+        if (err) {
+            return callback(err);
+        }
+        transaction.seedKey = seedKey;
+        manager.saveTransaction(transaction, callback);
+    });
+}
+
 function addFile(workingDir, FileObj, callback) {
     const cmd = {
         name: 'addFile',
@@ -62,6 +73,7 @@ function mount(workingDir, mountPoint, callback) {
     manager.addCommand(cmd, callback);
 }
 module.exports = {
+    setSeedKey,
     addFile,
     setEndpoint,
     mount
