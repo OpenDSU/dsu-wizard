@@ -64,7 +64,7 @@ function mount(workingDir, mountPoint, callback) {
     const cmd = {
         name: 'mount',
         params: {
-            path: path.dirname(mountPoint.path),
+            path: mountPoint.path,
             seed: mountPoint.seed
         }
     };
