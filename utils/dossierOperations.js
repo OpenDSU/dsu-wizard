@@ -22,7 +22,7 @@ function addFile(workingDir, dossierPath, archive, callback) {
 }
 
 function mount(workingDir, path, seed, archive, callback) {
-    archive.mount(path, seed, false, callback);
+    archive.mount(path, seed, callback);
 }
 
 module.exports = {
