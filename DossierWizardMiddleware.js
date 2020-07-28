@@ -4,7 +4,7 @@ const dossierWizardStorage = "dossier-wizard-storage";
 function DossierWizardMiddleware(server) {
     const path = require('path');
     const fs = require('fs');
-    const VirtualMQ = require('psk-webserver');
+    const VirtualMQ = require('psk-apihub');
     const httpWrapper = VirtualMQ.getHttpWrapper();
     const httpUtils = httpWrapper.httpUtils;
     const crypto = require('pskcrypto');
