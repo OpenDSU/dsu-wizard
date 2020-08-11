@@ -17,7 +17,7 @@ function executioner(workingDir, callback) {
                     return callback(err);
                 }
 
-                callback(undefined, archive.getSeed());
+                archive.getKeySSI(callback);
             });
         })
     });

@@ -5,15 +5,19 @@ function createArchive(endpoint, seedKey, callback) {
         callback = seedKey;
         seedKey = undefined;
     }
-    const edfs = EDFS.attachToEndpoint(endpoint);
-    if (typeof seedKey !== "undefined") {
-        const barModule = require("bar");
-        const Seed = barModule.Seed;
-        const seed = new Seed(undefined, endpoint, seedKey);
-        edfs.loadRawDossier(seed.getCompactForm(), callback)
-    } else {
-        edfs.createRawDossier(callback);
-    }
+    $$.BDNS.addConfig("default", {
+        endpoints: [
+            {
+                endpoint: endpoint,
+                type: 'brickStorage'
+            },
+            {
+                endpoint: endpoint,
+                type: 'anchorService'
+            }
+        ]
+    })
+    EDFS.createDSU("RawDossier", callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
