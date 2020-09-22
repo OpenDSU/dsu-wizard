@@ -1,4 +1,4 @@
-const EDFS = require("edfs");
+const openDSU = require("opendsu");
 
 function createArchive(endpoint, seedKey, callback) {
     if (typeof seedKey === "function") {
@@ -17,7 +17,8 @@ function createArchive(endpoint, seedKey, callback) {
             }
         ]
     })
-    EDFS.createDSU("RawDossier", callback);
+    //EDFS.createDSU("RawDossier", callback);
+    openDSU.loadApi("key-ssi-resolver").createDSU("keySSITemplate", undefined, callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
