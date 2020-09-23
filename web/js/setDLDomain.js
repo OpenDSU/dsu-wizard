@@ -1,9 +1,9 @@
-function setEndpoint() {
+function setDLDomain() {
     const baseURL = getBaseURL();
     const req = new XMLHttpRequest();
     const transactionId = document.getElementById('transactionId').value;
     const url = `${baseURL}/setEndpoint/${transactionId}`;
-    const endpoint = document.getElementById('endpoint').value;
+    const dlDomain = document.getElementById('dlDomain').value;
 
     req.open("POST", url, true);
     req.onload = function (oEvent) {
@@ -12,11 +12,11 @@ function setEndpoint() {
         const response = document.createElement('div');
 
         response.innerHTML = `
-        <p> The url was ${endpoint} successfully added </p>
+        <p> The domain ${dlDomain} was successfully added </p>
         `;
 
         content.appendChild(response);
     };
 
-    req.send(endpoint);
+    req.send(dlDomain);
 }

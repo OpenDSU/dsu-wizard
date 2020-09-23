@@ -1,4 +1,4 @@
-const URL_PREFIX = "/dossierWizard";
+const URL_PREFIX = "/dsuWizard";
 const dossierWizardStorage = "dossier-wizard-storage";
 
 function DossierWizardMiddleware(server) {
@@ -150,7 +150,7 @@ function DossierWizardMiddleware(server) {
 
     server.use(`${URL_PREFIX}`, redirect);
 
-    server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dossier-wizard/web'), `${URL_PREFIX}/`));
+    server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dsu-wizard/web'), `${URL_PREFIX}/`));
 }
 
 module.exports = DossierWizardMiddleware;
