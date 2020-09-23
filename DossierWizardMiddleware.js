@@ -72,7 +72,7 @@ function DossierWizardMiddleware(server) {
         });
     }
 
-    function setDossierEndpoint(req, res) {
+    function setDLDomain(req, res) {
         const transactionId = req.params.transactionId;
         serverCommands.setEndpoint(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
             if (err) {
@@ -137,9 +137,9 @@ function DossierWizardMiddleware(server) {
     server.post(`${URL_PREFIX}/addFile`, sendError);
     server.post(`${URL_PREFIX}/addFile/:transactionId`, addFileToDossier);
 
-    server.post(`${URL_PREFIX}/setEndpoint`, sendError);
-    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, httpUtils.bodyParser);
-    server.post(`${URL_PREFIX}/setEndpoint/:transactionId`, setDossierEndpoint);
+    server.post(`${URL_PREFIX}/setDLDomain`, sendError);
+    server.post(`${URL_PREFIX}/setDLDomain/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/setDLDomain/:transactionId`, setDLDomain);
 
     server.post(`${URL_PREFIX}/mount`, sendError);
     server.post(`${URL_PREFIX}/mount/:transactionId`, mount);
