@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const url = require('url');
 
 const TransactionManager = require("./TransactionManager");
 
@@ -42,19 +41,13 @@ function addFile(workingDir, FileObj, callback) {
     });
 }
 
-function setEndpoint(workingDir, endpointObj, callback) {
-    let endpoint;
-    try {
-        endpoint = new url.URL(endpointObj).origin;
-    } catch (e) {
-        return callback(e);
-    }
+function setEndpoint(workingDir, dlDomain, callback) {
     const manager = new TransactionManager(workingDir);
     manager.loadTransaction((err, transaction) => {
         if (err) {
             return callback(err);
         }
-        transaction.endpoint = endpoint;
+        transaction.dlDomain = dlDomain;
 
         manager.saveTransaction(transaction, callback);
     });

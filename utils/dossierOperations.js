@@ -1,24 +1,17 @@
 const openDSU = require("opendsu");
 
-function createArchive(endpoint, seedKey, callback) {
-    if (typeof seedKey === "function") {
-        callback = seedKey;
-        seedKey = undefined;
+function createArchive(dlDomain, callback) {
+    if (typeof dlDomain === "function") {
+        callback = dlDomain;
+        dlDomain = "default";
     }
-    $$.BDNS.addConfig("default", {
-        endpoints: [
-            {
-                endpoint: endpoint,
-                type: 'brickStorage'
-            },
-            {
-                endpoint: endpoint,
-                type: 'anchorService'
-            }
-        ]
-    })
-    //EDFS.createDSU("RawDossier", callback);
-    openDSU.loadApi("key-ssi-resolver").createDSU("keySSITemplate", undefined, callback);
+
+    if (typeof dlDomain === "undefined" || dlDomain === '') {
+        dlDomain = "default";
+    }
+
+    const keyssi = openDSU.loadApi("keyssi");
+    openDSU.loadApi("resolver").createDSU(keyssi.buildSeedSSI(dlDomain), callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
