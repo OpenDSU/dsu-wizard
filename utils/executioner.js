@@ -7,10 +7,12 @@ function executioner(workingDir, callback) {
         if (err) {
             return callback(err);
         }
-        dossierOperations.createArchive(transaction.templateSSI, (err, archive) => {
-            if (err) {
-                return callback(err);
-            }
+
+        if (typeof transaction.keySSI === "undefined") {
+            dossierOperations.createArchiveWithDomain(transaction.dlDomain, (err, archive) => {
+                if (err) {
+                    return callback(err);
+                }
 
                 executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
                     if (err) {
