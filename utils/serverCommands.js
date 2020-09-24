@@ -3,13 +3,13 @@ const path = require("path");
 
 const TransactionManager = require("./TransactionManager");
 
-function setSeedKey(workingDir, seedKey, callback) {
+function setTemplateSSI(workingDir, templateSSI, callback) {
     const manager = new TransactionManager(workingDir);
     manager.loadTransaction((err, transaction) => {
         if (err) {
             return callback(err);
         }
-        transaction.seedKey = seedKey;
+        transaction.templateSSI = templateSSI;
         manager.saveTransaction(transaction, callback);
     });
 }
@@ -41,7 +41,7 @@ function addFile(workingDir, FileObj, callback) {
     });
 }
 
-function setEndpoint(workingDir, dlDomain, callback) {
+function setDLDomain(workingDir, dlDomain, callback) {
     const manager = new TransactionManager(workingDir);
     manager.loadTransaction((err, transaction) => {
         if (err) {
@@ -66,8 +66,8 @@ function mount(workingDir, mountPoint, callback) {
     manager.addCommand(cmd, callback);
 }
 module.exports = {
-    setSeedKey,
+    setTemplateSSI,
     addFile,
-    setEndpoint,
+    setDLDomain,
     mount
 };

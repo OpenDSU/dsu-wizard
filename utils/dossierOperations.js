@@ -1,17 +1,19 @@
 const openDSU = require("opendsu");
 
-function createArchive(dlDomain, callback) {
-    if (typeof dlDomain === "function") {
-        callback = dlDomain;
-        dlDomain = "default";
-    }
-
-    if (typeof dlDomain === "undefined" || dlDomain === '') {
-        dlDomain = "default";
-    }
-
+function createArchive(templateSSI, callback) {
     const keyssi = openDSU.loadApi("keyssi");
-    openDSU.loadApi("resolver").createDSU(keyssi.buildSeedSSI(dlDomain), callback);
+
+    if (typeof templateSSI === "function") {
+        callback = templateSSI;
+        templateSSI = keyssi.buildSeedSSI("default");
+    }
+
+    if (typeof templateSSI === "undefined" || templateSSI === '') {
+        templateSSI = keyssi.buildSeedSSI("default");
+    }
+
+
+    openDSU.loadApi("resolver").createDSU(templateSSI, callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
