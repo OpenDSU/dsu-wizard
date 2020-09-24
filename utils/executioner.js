@@ -12,14 +12,24 @@ function executioner(workingDir, callback) {
                 return callback(err);
             }
 
-            executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
+                executeCommand(transaction.commands, archive, workingDir, 0, (err) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    archive.getKeySSI(callback);
+                });
+            });
+        }else{
+            dossierOperations.createArchiveWithKeySSI(transaction.keySSI, (err, archive) => {
                 if (err) {
                     return callback(err);
                 }
 
+                console.log("Got archive using keySSI");
                 archive.getKeySSI(callback);
             });
-        })
+        }
     });
 }
 

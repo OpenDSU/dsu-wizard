@@ -1,19 +1,12 @@
 const openDSU = require("opendsu");
+const keyssi = openDSU.loadApi("keyssi");
 
-function createArchive(templateSSI, callback) {
-    const keyssi = openDSU.loadApi("keyssi");
+function createArchiveWithKeySSI(keySSI, callback) {
+    openDSU.loadApi("resolver").createDSU(keySSI, {useSSIAsIdentifier: true}, callback);
+}
 
-    if (typeof templateSSI === "function") {
-        callback = templateSSI;
-        templateSSI = keyssi.buildSeedSSI("default");
-    }
-
-    if (typeof templateSSI === "undefined" || templateSSI === '') {
-        templateSSI = keyssi.buildSeedSSI("default");
-    }
-
-
-    openDSU.loadApi("resolver").createDSU(templateSSI, callback);
+function createArchiveWithDomain(dlDomain, callback) {
+    openDSU.loadApi("resolver").createDSU(keyssi.buildSeedSSI(dlDomain), callback);
 }
 
 function addFile(workingDir, dossierPath, archive, callback) {
@@ -34,6 +27,7 @@ function mount(workingDir, path, seed, archive, callback) {
 
 module.exports = {
     addFile,
-    createArchive,
+    createArchiveWithDomain,
+    createArchiveWithKeySSI,
     mount
 };

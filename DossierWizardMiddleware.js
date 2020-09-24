@@ -36,9 +36,9 @@ function DossierWizardMiddleware(server) {
         });
     }
 
-    function setTemplateSSI(req, res) {
+    function setKeySSI(req, res) {
         const transactionId = req.params.transactionId;
-        serverCommands.setTemplateSSI(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
+        serverCommands.setKeySSI(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
             if (err) {
                 res.statusCode = 500;
             }
@@ -74,7 +74,7 @@ function DossierWizardMiddleware(server) {
 
     function setDLDomain(req, res) {
         const transactionId = req.params.transactionId;
-        serverCommands.setEndpoint(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
+        serverCommands.setDLDomain(path.join(server.rootFolder, dossierWizardStorage, transactionId), req.body, (err) => {
             if (err) {
                 res.statusCode = 500;
             }
@@ -131,8 +131,8 @@ function DossierWizardMiddleware(server) {
 
     server.post(`${URL_PREFIX}/begin`, beginSession);
 
-    server.post(`${URL_PREFIX}/setTemplateSSI/:transactionId`, httpUtils.bodyParser);
-    server.post(`${URL_PREFIX}/setTemplateSSI/:transactionId`, setTemplateSSI);
+    server.post(`${URL_PREFIX}/setKeySSI/:transactionId`, httpUtils.bodyParser);
+    server.post(`${URL_PREFIX}/setKeySSI/:transactionId`, setKeySSI);
 
     server.post(`${URL_PREFIX}/addFile`, sendError);
     server.post(`${URL_PREFIX}/addFile/:transactionId`, addFileToDossier);

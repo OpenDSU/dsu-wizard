@@ -1,9 +1,9 @@
-function setTemplateSSI() {
+function setKeySSI() {
     const baseURL = getBaseURL();
     const req = new XMLHttpRequest();
     const transactionId = document.getElementById('transactionId').value;
-    const url = `${baseURL}/setTemplateSSI/${transactionId}`;
-    const templateSSI = document.getElementById('templateSSI').value;
+    const url = `${baseURL}/setKeySSI/${transactionId}`;
+    const templateSSI = document.getElementById('keySSI').value;
 
     req.open("POST", url, true);
     req.onload = function (oEvent) {

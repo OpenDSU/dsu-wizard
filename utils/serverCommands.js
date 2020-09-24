@@ -3,13 +3,13 @@ const path = require("path");
 
 const TransactionManager = require("./TransactionManager");
 
-function setTemplateSSI(workingDir, templateSSI, callback) {
+function setKeySSI(workingDir, keySSI, callback) {
     const manager = new TransactionManager(workingDir);
     manager.loadTransaction((err, transaction) => {
         if (err) {
             return callback(err);
         }
-        transaction.templateSSI = templateSSI;
+        transaction.keySSI = keySSI;
         manager.saveTransaction(transaction, callback);
     });
 }
@@ -66,7 +66,7 @@ function mount(workingDir, mountPoint, callback) {
     manager.addCommand(cmd, callback);
 }
 module.exports = {
-    setTemplateSSI,
+    setKeySSI,
     addFile,
     setDLDomain,
     mount
