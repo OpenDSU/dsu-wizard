@@ -2,7 +2,7 @@ function setDLDomain() {
     const baseURL = getBaseURL();
     const req = new XMLHttpRequest();
     const transactionId = document.getElementById('transactionId').value;
-    const url = `${baseURL}/setEndpoint/${transactionId}`;
+    const url = `${baseURL}/setDLDomain/${transactionId}`;
     const dlDomain = document.getElementById('dlDomain').value;
 
     req.open("POST", url, true);
