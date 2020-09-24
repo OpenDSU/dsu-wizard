@@ -7,7 +7,7 @@ function executioner(workingDir, callback) {
         if (err) {
             return callback(err);
         }
-        dossierOperations.createArchive(transaction.dlDomain, (err, archive) => {
+        dossierOperations.createArchive(transaction.templateSSI, (err, archive) => {
             if (err) {
                 return callback(err);
             }

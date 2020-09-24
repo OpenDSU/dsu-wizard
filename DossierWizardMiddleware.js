@@ -106,10 +106,10 @@ function DossierWizardMiddleware(server) {
         executioner.executioner(path.join(server.rootFolder, dossierWizardStorage, transactionId), (err, seed) => {
             if (err) {
                 res.statusCode = 500;
-                console.log("Error", err);
                 res.end();
                 return;
             }
+
             res.end(seed.toString());
 
         });

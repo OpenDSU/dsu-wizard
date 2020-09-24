@@ -18,7 +18,14 @@ function createArchive(templateSSI, callback) {
 
 function addFile(workingDir, dossierPath, archive, callback) {
     const path = require("path");
-    archive.addFile(path.join(workingDir, path.basename(dossierPath)), dossierPath, callback);
+    archive.addFile(path.join(workingDir, path.basename(dossierPath)), dossierPath, (err) => {
+
+        if (err) {
+            throw err;
+        }
+
+        callback(undefined);
+    });
 }
 
 function mount(workingDir, path, seed, archive, callback) {
