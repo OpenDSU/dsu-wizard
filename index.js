@@ -41,7 +41,9 @@ function initWizard(server) {
 	const VirtualMQ = require('psk-apihub');
 	const httpWrapper = VirtualMQ.getHttpWrapper();
 	const httpUtils = httpWrapper.httpUtils;
-	server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dsu-wizard/web'), `${URL_PREFIX}/`));
+	setTimeout(()=>{
+		server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dsu-wizard/web'), `${URL_PREFIX}/`));
+	}, 1000);
 }
 
 module.exports = {
@@ -49,7 +51,11 @@ module.exports = {
 	getTransactionManager : function(){
 		return require("./TransactionManager");
 	},
-	getCommandRegistry: function(){
-		return require("./CommandRegistry");
-	}
+	getCommandRegistry: function(server){
+		return require("./CommandRegistry").getRegistry(server);
+	},
+	getDummyCommand: function(){
+		return require("./commands/dummyCommand");
+	},
+	utils: require("./utils")
 }
