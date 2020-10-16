@@ -1,13 +1,3 @@
-function createAddFileCommand(filePath, dossierPath){
-	const command = {
-		execute: function(context, callback){
-			context.dsu.addFile(filePath, dossierPath, callback);
-		}
-	}
-
-	return command;
-}
-
 function AddFile(server){
 	const pathName = "path";
 	const path = require(pathName);
@@ -17,6 +7,25 @@ function AddFile(server){
 	const os = require(osName);
 
 	const utils = require("../utils");
+
+	function createAddFileCommand(filePath, dossierPath){
+		const command = {
+			execute: function(context, callback){
+				context.dsu.addFile(filePath, dossierPath, (err)=>{
+					if(err){
+						return callback(err);
+					}
+					//once the file is added into dossier we remove it.
+					fs.unlink(filePath, ()=>{
+						//we ignore errors that can appear during unlink on windows machines
+						return callback();
+					});
+				});
+			}
+		}
+
+		return command;
+	}
 
 	const commandRegistry = require("../CommandRegistry").getRegistry(server);
 	commandRegistry.register("/addFile", "post", (req, callback)=>{
@@ -48,7 +57,9 @@ function AddFile(server){
 
 				file.on('error', (err)=>{
 					return callback(err);
-				});*/
+				});
+				req.pipe(file);
+				*/
 
 				file.write(fileContent);
 				return callback(undefined, createAddFileCommand(tempFilePath, dossierPath));
