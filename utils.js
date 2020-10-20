@@ -19,9 +19,24 @@ function formDataParser(req, callback) {
 	let formData = [];
 	let currentFormItem;
 	let currentBoundary;
-	req.on('data', function (dataChunk) {
-		dataChunk = dataChunk.toString();
-		let dataArray = dataChunk.split("\r\n");
+	let dataBuf = Buffer.alloc(0);
+	req.on('data', function (dataChunk){
+		dataBuf = Buffer.concat([dataBuf, dataChunk]);
+	});
+
+	req.on('end', function () {
+		formParser(dataBuf);
+		req.formData = formData;
+		callback(undefined, req.formData);
+	});
+
+	req.on('error', function (err) {
+		callback(err);
+	});
+
+	function formParser(data) {
+		data = data.toString();
+		let dataArray = data.split(/[\r\n]+/);
 		let removeOneLine = false;
 		dataArray.forEach((dataLine)=>{
 			let lineHandled = false;
@@ -89,16 +104,7 @@ function formDataParser(req, callback) {
 				}
 			}
 		});
-	});
-
-	req.on('end', function () {
-		req.formData = formData;
-		callback(undefined, req.formData);
-	});
-
-	req.on('error', function (err) {
-		callback(err);
-	});
+	}
 }
 
 function redirect(req, res) {
