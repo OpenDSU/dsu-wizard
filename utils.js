@@ -36,7 +36,7 @@ function formDataParser(req, callback) {
 
 	function formParser(data) {
 		data = data.toString();
-		let dataArray = data.split(/[\r\n]+/);
+		let dataArray = data.split(/[\r\n]+/g);
 		let removeOneLine = false;
 		dataArray.forEach((dataLine)=>{
 			let lineHandled = false;
@@ -97,10 +97,8 @@ function formDataParser(req, callback) {
 			}
 			if(!lineHandled){
 				//it's pure content
-				if(!removeOneLine){
+				if(typeof currentFormItem !== "undefined"){
 					currentFormItem.ingestContent(dataLine);
-				}else{
-					removeOneLine = false;
 				}
 			}
 		});
