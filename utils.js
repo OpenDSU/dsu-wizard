@@ -16,10 +16,10 @@ function bodyParser(req, callback) {
 }
 
 function formDataParser(req, callback) {
+    const buffers = [];
     let formData = [];
     let currentFormItem;
     let currentBoundary;
-    let dataBuf = Buffer.alloc(0);
     let defaultItem = {
         bufferStartIndex: 0,
         bufferEndIndex: 0,
@@ -33,10 +33,11 @@ function formDataParser(req, callback) {
     }
 
     req.on('data', function (dataChunk) {
-        dataBuf = Buffer.concat([dataBuf, dataChunk]);
+        buffers.push(dataChunk);
     });
 
     req.on('end', function () {
+        const dataBuf = Buffer.concat(buffers);
         formParser(dataBuf);
         req.formData = formData;
         callback(undefined, req.formData);
