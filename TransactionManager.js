@@ -48,7 +48,13 @@ function TransactionsManager(){
 			let command = transaction.commands.pop();
 			if(!command){
 				if(transaction.commands.length === 0){
-					return transaction.context.dsu.getKeySSI(callback);
+                    // Anchor all changes in this transaction
+                    return transaction.context.dsu.doAnchoring((err, result) => {
+                        if (err) {
+                            return callback(err);
+                        }
+                        return transaction.context.dsu.getKeySSI(callback);
+                    });
 				}
 			}
 
@@ -64,10 +70,31 @@ function TransactionsManager(){
 		const openDSU = require("opendsu");
 		const keyssi = openDSU.loadApi("keyssi");
 
+        let resolverMethod = 'loadDSU';
 		if(typeof transaction.context.keySSI === "undefined"){
 			transaction.context.keySSI = keyssi.buildSeedSSI(transaction.context.domain);
+            resolverMethod = 'createDSU';
 		}
-		openDSU.loadApi("resolver").createDSU(transaction.context.keySSI, transaction.context.options, (err, dsu)=>{
+
+        if (transaction.context.forceNewDSU) {
+            resolverMethod = 'createDSU';
+        }
+
+        const dsuOptions = transaction.context.options || {};
+        if (typeof dsuOptions.anchoringOptions === 'undefined') {
+            dsuOptions.anchoringOptions = {};
+        }
+
+        if (typeof dsuOptions.anchoringOptions.decisionFn !== 'function') {
+            dsuOptions.anchoringOptions.decisionFn = (brickMap, callback) => {
+                // Prevent "auto anchoring" each file
+                // Anchoring will be manually triggered
+                // when closing the transaction
+                callback(false);
+            };
+        }
+
+        openDSU.loadApi("resolver")[resolverMethod](transaction.context.keySSI, dsuOptions, (err, dsu)=>{
 			if(err){
 				return callback(err);
 			}
