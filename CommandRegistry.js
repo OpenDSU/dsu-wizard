@@ -2,7 +2,7 @@ function CommandRegistry(server){
 	const URL_PREFIX = require("./constants").URL_PREFIX;
 
 	this.register = (url, method, commandFactory)=>{
-		const fullUrl = URL_PREFIX+url+"/:transactionId";
+		const fullUrl = "/dsuWizard/:domain"+url+"/:transactionId";
 		console.log("Registering url", fullUrl, method);
 		server[method](fullUrl, (req, res)=>{
 			commandFactory(req, (err, command)=>{

@@ -1,9 +1,8 @@
 function initWizard(server) {
 
-	const URL_PREFIX = require("./constants").URL_PREFIX;
 	const transactionManager = require("./TransactionManager");
 
-	server.post(`${URL_PREFIX}/begin`, (req, res)=>{
+	server.post(`/dsuWizard/:domain/begin`, (req, res)=>{
 		transactionManager.beginTransaction((err, transactionId)=>{
 			if(err){
 				res.statusCode = 500;
@@ -14,7 +13,7 @@ function initWizard(server) {
 		});
 	});
 
-	server.post(`${URL_PREFIX}/build/:transactionId`, (req, res)=>{
+	server.post(`/dsuWizard/:domain/build/:transactionId`, (req, res)=>{
 		transactionManager.closeTransaction(req.params.transactionId, (err, result)=>{
 			if(err){
 				res.statusCode = 500;
@@ -30,7 +29,7 @@ function initWizard(server) {
 		commands[commandName](server);
 	});
 
-	server.use(`${URL_PREFIX}`, require("./utils").redirect);
+	server.use(`/dsuWizard`, require("./utils").redirect);
 
 	const pathName = "path";
 	const path = require(pathName);
@@ -42,7 +41,7 @@ function initWizard(server) {
 	const httpWrapper = VirtualMQ.getHttpWrapper();
 	const httpUtils = httpWrapper.httpUtils;
 	setTimeout(()=>{
-		server.use(`${URL_PREFIX}/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dsu-wizard/web'), `${URL_PREFIX}/`));
+		server.use(`/dsuWizard/:domain/*`, httpUtils.serveStaticFile(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, 'modules/dsu-wizard/web'), `dsuWizard/`));
 	}, 1000);
 }
 
