@@ -3,6 +3,6 @@ function getBaseURL() {
     const host = window.location.hostname;
     const port = window.location.port;
 
-    return `${protocol}//${host}:${port}/dsuWizard`;
+    return `${protocol}//${host}:${port}/dsu-wizard`;
 }
 
