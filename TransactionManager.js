@@ -2,7 +2,7 @@ transactions = {};
 
 function TransactionsManager(){
 
-	this.beginTransaction = function(callback){
+	this.beginTransaction = function(req, callback){
 		const crypto = require("pskcrypto");
 		const Queue = require("swarmutils").Queue;
 		const randSize = require("./constants").transactionIdLength;
@@ -13,7 +13,7 @@ function TransactionsManager(){
 			commands: new Queue(),
 			context: {
 				result: {},
-				domain: "default",
+				domain: req.params.domain,
 				options: {useSSIAsIdentifier: false}
 			}
 		}
@@ -40,8 +40,9 @@ function TransactionsManager(){
 
 	this.closeTransaction = function(transactionId, callback){
 		let transaction = transactions[transactionId];
-		if(!transaction){
-			callback('Transaction could not be found');
+		let newKeySSIJustInitialised = false;
+		if(typeof transaction === "undefined" ){
+			callback(Error('Transaction could not be found'));
 		}
 
 		function executeCommand(){
@@ -73,7 +74,9 @@ function TransactionsManager(){
         let resolverMethod = 'loadDSU';
 		if(typeof transaction.context.keySSI === "undefined"){
 			transaction.context.keySSI = keyssi.buildSeedSSI(transaction.context.domain);
+			console.log(">>>Creating new SeedSSI ", transaction.context.keySSI.getIdentifier(true), transactionId);
             resolverMethod = 'createDSU';
+			newKeySSIJustInitialised = true;
 		}
 
         if (transaction.context.forceNewDSU) {
@@ -93,16 +96,32 @@ function TransactionsManager(){
                 callback(false);
             };
         }
+	let resolver = openDSU.loadApi("resolver");
+	let keyssiutil = openDSU.loadApi("keyssi");
 
-        openDSU.loadApi("resolver")[resolverMethod](transaction.context.keySSI, dsuOptions, (err, dsu)=>{
-			if(err){
-				return callback(err);
-			}
-			transaction.context.dsu = dsu;
+		let initialiseContextDSU = () => {
+			resolver[resolverMethod](transaction.context.keySSI, dsuOptions, (err, dsu)=>{
+				if(err){
+					return callback(err);
+				}
+				transaction.context.dsu = dsu;
+				//start executing the stored commands from transaction
+				executeCommand();
+			});
+		}
 
-			//start executing the stored commands from transaction
-			executeCommand();
-		});
+        if(resolverMethod === "createDSU" && !newKeySSIJustInitialised){
+        	let testSSI = keyssiutil.parse(transaction.context.keySSI.getIdentifier());
+			resolver.loadDSU(testSSI, dsuOptions, (err, dsu)=>{
+				if(!err && dsu){
+					return callback(createOpenDSUErrorWrapper("DSU already exist, refusing to overwrite"));
+				}
+				//a DSU with this Seed does not exist, so it is safe to create one
+				initialiseContextDSU();
+			});
+		} else {
+			initialiseContextDSU();
+		}
 	}
 }
 

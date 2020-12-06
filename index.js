@@ -3,7 +3,7 @@ function initWizard(server) {
 	const transactionManager = require("./TransactionManager");
 
 	server.post(`/dsu-wizard/:domain/begin`, (req, res)=>{
-		transactionManager.beginTransaction((err, transactionId)=>{
+		transactionManager.beginTransaction(req, (err, transactionId)=>{
 			if(err){
 				res.statusCode = 500;
 				return res.end();
@@ -17,6 +17,7 @@ function initWizard(server) {
 		transactionManager.closeTransaction(req.params.transactionId, (err, result)=>{
 			if(err){
 				res.statusCode = 500;
+				res.write(err.toString());
 				return res.end();
 			}
 			res.write(result);
