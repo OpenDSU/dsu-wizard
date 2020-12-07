@@ -37,7 +37,7 @@ function formDataParser(req, callback) {
     });
 
     req.on('end', function () {
-        const dataBuf = Buffer.concat(buffers);
+        const dataBuf = $$.Buffer.concat(buffers);
         formParser(dataBuf);
         req.formData = formData;
         callback(undefined, req.formData);
