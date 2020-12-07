@@ -38,7 +38,7 @@ function initWizard(server) {
 		process.env.PSK_ROOT_INSTALATION_FOLDER = require("path").resolve("." + __dirname + "/../..");
 	}
 
-	const VirtualMQ = require('psk-apihub');
+	const VirtualMQ = require('apihub');
 	const httpWrapper = VirtualMQ.getHttpWrapper();
 	const httpUtils = httpWrapper.httpUtils;
 	setTimeout(()=>{
