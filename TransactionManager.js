@@ -74,7 +74,6 @@ function TransactionsManager(){
         let resolverMethod = 'loadDSU';
 		if(typeof transaction.context.keySSI === "undefined"){
 			transaction.context.keySSI = keyssi.buildSeedSSI(transaction.context.domain);
-			console.log(">>>Creating new SeedSSI ", transaction.context.keySSI.getIdentifier(true), transactionId);
             resolverMethod = 'createDSU';
 			newKeySSIJustInitialised = true;
 		}
