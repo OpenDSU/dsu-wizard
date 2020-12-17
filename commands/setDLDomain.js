@@ -8,7 +8,7 @@ function setDLDomain(server){
 		const transactionManager = require("../TransactionManager");
 		utils.bodyParser(req, (err)=>{
 			if(err){
-				return callback(err);
+				return callback(createOpenDSUErrorWrapper(`Failed to parse body`, err));
 			}
 			const transaction = transactionManager.getTransaction(req.params.transactionId);
 			transaction.context.dlDomain = req.body;

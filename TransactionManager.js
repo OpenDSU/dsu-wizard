@@ -52,7 +52,7 @@ function TransactionsManager(){
                     // Anchor all changes in this transaction
                     return transaction.context.dsu.doAnchoring((err, result) => {
                         if (err) {
-                            return callback(err);
+							return callback(createOpenDSUErrorWrapper(`Failed to anchor DSU`, err));
                         }
                         return transaction.context.dsu.getKeySSI(callback);
                     });
@@ -61,7 +61,7 @@ function TransactionsManager(){
 
 			command.execute(transaction.context, (err)=>{
 				if(err){
-					return callback(err);
+					return callback(createOpenDSUErrorWrapper(`Failed to execute command`, err));
 				}
 
 				executeCommand();
@@ -101,7 +101,7 @@ function TransactionsManager(){
 		let initialiseContextDSU = () => {
 			resolver[resolverMethod](transaction.context.keySSI, dsuOptions, (err, dsu)=>{
 				if(err){
-					return callback(err);
+					return callback(createOpenDSUErrorWrapper(`Failed to initialize context DSU`, err));
 				}
 				transaction.context.dsu = dsu;
 				//start executing the stored commands from transaction
