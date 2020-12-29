@@ -1,5 +1,3 @@
-const command = require("./dummyCommand");
-
 function setDLDomain(server){
 	const commandRegistry = require("../CommandRegistry").getRegistry(server);
 	const utils = require("../utils");
@@ -10,10 +8,19 @@ function setDLDomain(server){
 			if(err){
 				return callback(createOpenDSUErrorWrapper(`Failed to parse body`, err));
 			}
-			const transaction = transactionManager.getTransaction(req.params.transactionId);
-			transaction.context.dlDomain = req.body;
-
-			return callback(undefined, command);
+			const transaction = transactionManager.getTransaction(req.params.transactionId, (err, transaction) =>{
+				if(err || !transaction){
+					return callback(err);
+				}
+				transaction.context.dlDomain = req.body;
+				transactionManager.persistTransaction(transaction, (err)=> {
+					if (err) {
+						return callback(err);
+					}
+					const command = require("./dummyCommand").create("setDLDomain");
+					return callback(undefined, command);
+				});
+			});
 		});
 	});
 }

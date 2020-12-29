@@ -1,4 +1,4 @@
-function setDLDomain(server){
+function mount(server){
 	const commandRegistry = require("../CommandRegistry").getRegistry(server);
 
 	commandRegistry.register("/mount", "post", (req, callback)=>{
@@ -9,14 +9,23 @@ function setDLDomain(server){
 			return callback('Wrong usage of the command');
 		}
 
-		const command = {
-			execute : function(context, callback){
-				context.dsu.mount(path, keySSI, callback);
+		function createExecutableCommand(path, keySSI){
+			const command = {
+				execute : function(context, callback){
+					context.dsu.mount(path, keySSI, callback);
+				}
 			}
+			return command;
 		}
 
-		return callback(undefined, command);
+		let cmd = {
+			args: [path, keySSI],
+			type: "mount",
+			method: createExecutableCommand
+		}
+
+		return callback(undefined, cmd);
 	});
 }
 
-module.exports = setDLDomain;
+module.exports = mount;

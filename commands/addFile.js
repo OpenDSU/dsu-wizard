@@ -16,6 +16,7 @@ function AddFile(server){
 						return callback(err);
 					}
 					//once the file is added into dossier we remove it.
+					const fs = require("fs");
 					fs.unlink(filePath, ()=>{
 						//we ignore errors that can appear during unlink on windows machines
 						return callback();
@@ -51,18 +52,15 @@ function AddFile(server){
 				const tempFilePath = path.join(directory, tempFileName);
 				const file = fs.createWriteStream(tempFilePath);
 
-				/*file.on('close', () => {
-					return callback(undefined, createAddFileCommand(tempFilePath, dossierPath));
-				});
-
-				file.on('error', (err)=>{
-					return callback(err);
-				});
-				req.pipe(file);
-				*/
-
 				file.write(fileContent);
-				return callback(undefined, createAddFileCommand(tempFilePath, dossierPath));
+
+				let cmd = {
+					args: [tempFilePath, dossierPath],
+					type: "addFile",
+					method: createAddFileCommand
+				}
+
+				return callback(undefined, cmd);
 			});
 		});
 	});
