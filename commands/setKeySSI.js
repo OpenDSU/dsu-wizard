@@ -9,7 +9,7 @@ function setKeySSI(server){
 		const keyssiSpace = require("opendsu").loadApi("keyssi");
 		utils.bodyParser(req, (err)=>{
 			if(err){
-				return callback(createOpenDSUErrorWrapper(`Failed to parse body`, err));
+				return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to parse body`, err));
 			}
 
 			const transaction = transactionManager.getTransaction(req.params.transactionId);
