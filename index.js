@@ -14,7 +14,8 @@ function initWizard(server) {
 	});
 
 	server.post(`/dsu-wizard/:domain/build/:transactionId`, (req, res)=>{
-		transactionManager.closeTransaction(req.params.transactionId, (err, result)=>{
+		let authorization = req.headers['authorization'];
+		transactionManager.closeTransaction(req.params.transactionId, authorization,(err, result)=>{
 			if(err){
 				res.statusCode = 500;
 				res.write(err.toString());
