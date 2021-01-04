@@ -6,7 +6,7 @@ function setDLDomain(server){
 		const transactionManager = require("../TransactionManager");
 		utils.bodyParser(req, (err)=>{
 			if(err){
-				return callback(createOpenDSUErrorWrapper(`Failed to parse body`, err));
+				return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to parse body`, err));
 			}
 			const transaction = transactionManager.getTransaction(req.params.transactionId, (err, transaction) =>{
 				if(err || !transaction){
