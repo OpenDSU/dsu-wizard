@@ -6,7 +6,6 @@ function setKeySSI(server){
 
 	commandRegistry.register("/setKeySSI", "post", (req, callback)=>{
 		const transactionManager = require("../TransactionManager");
-		const keyssiSpace = require("opendsu").loadApi("keyssi");
 		utils.bodyParser(req, (err)=>{
 			if(err){
 				return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to parse body`, err));
@@ -16,7 +15,7 @@ function setKeySSI(server){
 				if (err || !transaction) {
 					return callback(err);
 				}
-				transaction.context.keySSI = keyssiSpace.parse(req.body);
+				transaction.context.keySSI = req.body;
 				transaction.context.options.useSSIAsIdentifier = true;
 				transactionManager.persistTransaction(transaction, (err) => {
 					if (err) {

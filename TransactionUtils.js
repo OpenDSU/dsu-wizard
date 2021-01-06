@@ -178,7 +178,12 @@ function initializeWorker(){
 
 			let initialiseContextDSU = () => {
 				enableAuthorization();
-				resolver[resolverMethod](transaction.context.keySSI, dsuOptions, (err, dsu) => {
+				const keyssiSpace = require("opendsu").loadApi("keyssi");
+				let ssi = transaction.context.keySSI;
+				if(typeof ssi === "string"){
+					ssi = keyssiSpace.parse(ssi);
+				}
+				resolver[resolverMethod](ssi, dsuOptions, (err, dsu) => {
 					if (err) {
 						return callback(new Error(`Failed to initialize context DSU`, err));
 					}
@@ -189,7 +194,10 @@ function initializeWorker(){
 			}
 
 			if (resolverMethod === "createDSU" && !newKeySSIJustInitialised) {
-				let testSSI = keyssiutil.parse(transaction.context.keySSI);
+				let testSSI = transaction.context.keySSI;
+				if(typeof testSSI === "string"){
+					testSSI = keyssiutil.parse(testSSI);
+				}
 				resolver.loadDSU(testSSI, dsuOptions, (err, dsu) => {
 					if (!err && dsu) {
 						return callback(new Error("DSU already exist, refusing to overwrite"));
