@@ -12,16 +12,20 @@ function setKeySSI(server){
 				return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to parse body`, err));
 			}
 
-			const transaction = transactionManager.getTransaction(req.params.transactionId);
-			transaction.context.keySSI = keyssiSpace.parse(req.body);
-			transaction.context.options.useSSIAsIdentifier = true;
-			transactionManager.persistTransaction(transaction, (err)=> {
-				if (err) {
+			transactionManager.getTransaction(req.params.transactionId, (err, transaction) => {
+				if (err || !transaction) {
 					return callback(err);
 				}
+				transaction.context.keySSI = keyssiSpace.parse(req.body);
+				transaction.context.options.useSSIAsIdentifier = true;
+				transactionManager.persistTransaction(transaction, (err) => {
+					if (err) {
+						return callback(err);
+					}
 
-				const command = require("./dummyCommand").create("setKeySSI");
-				return callback(undefined, command);
+					const command = require("./dummyCommand").create("setKeySSI");
+					return callback(undefined, command);
+				});
 			});
 		});
 	});
