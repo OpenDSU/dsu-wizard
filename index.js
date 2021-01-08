@@ -17,6 +17,7 @@ function initWizard(server) {
 		let authorization = req.headers['authorization'];
 		transactionManager.closeTransaction(req.params.transactionId, authorization,(err, result)=>{
 			if(err){
+				console.log(err);
 				res.statusCode = 500;
 				res.write(err.toString());
 				return res.end();
