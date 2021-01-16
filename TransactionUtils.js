@@ -124,7 +124,7 @@ function initializeWorker(){
 							if (err) {
 								return callback(new Error(`Failed to anchor DSU`, err));
 							}
-							return transaction.context.dsu.getKeySSI((err, keySSI)=>{
+							return transaction.context.dsu.getKeySSIAsString((err, keySSI)=>{
 								resetAuthorization();
 								callback(err, keySSI);
 							});
