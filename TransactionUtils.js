@@ -181,7 +181,6 @@ function initializeWorker(){
 				const keyssiSpace = require("opendsu").loadApi("keyssi");
 				let ssi = transaction.context.keySSI;
 				if(typeof ssi === "string"){
-					console.log("Parse SSI", ssi);
 					ssi = keyssiSpace.parse(ssi);
 				}
 				resolver[resolverMethod](ssi, dsuOptions, (err, dsu) => {
@@ -221,7 +220,7 @@ function getWorkerScript(){
 	script += "const serverConfig = JSON.parse(\'"+JSON.stringify(serverConfig)+"\'); \n";
 	script += "const config = serverConfig.endpointsConfig[\"dsu-wizard\"]; \n";
 	script += `${getTransaction.toString()} ${getFileForTransaction.toString()} (${initializeWorker.toString()})()`;
-	console.log(script);
+
 	return script;
 }
 
