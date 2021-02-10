@@ -99,7 +99,12 @@ function initializeWorker(){
 
 			function authInterceptor(target, callback){
 				const {url, headers} = target;
-				headers['authorization'] = authorization;
+				if(typeof authorization !== "undefined"){
+					headers['authorization'] = authorization;
+				}else{
+					console.log(`Missing authorization info. Not able to set authorization header for req ${url}. Request could fail if authorization not provided!`);
+				}
+
 				//console.log("Setting authorization header for url", headers, url);
 				return callback(undefined, target);
 			}
