@@ -69,10 +69,18 @@ function formDataParser(req, callback) {
                     //Due to encoding method of the characters, in some scenarios we will need to prevent the lose of bytes
                     //That's why in the final boundary we add them back
                     currentFormItem.increaseEndBuffer(data.byteLength - dataAsString.length);
+
+                    let content = data.slice(currentFormItem.bufferStartIndex + 2, currentFormItem.bufferEndIndex + 2);
+                    //if there is a trailing carriage return character we try to remove it
+                    if(content && content[content.length-1] === Buffer.from("\r")[0]){
+                        content = content.slice(0, -1);
+                    }
+
                     currentFormItem = {
                         type: currentFormItem.type,
-                        content: data.slice(currentFormItem.bufferStartIndex + 2, currentFormItem.bufferEndIndex + 2)
+                        content
                     }
+
                     //we add the formItem to formData and consider that is done
                     formData.push(currentFormItem);
 
