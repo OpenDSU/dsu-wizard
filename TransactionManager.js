@@ -1,10 +1,12 @@
+const serverConfig = require("apihub").getServerConfig();
+const WorkerPoolManager = require("./WorkerPoolManager.js");
+const crypto = require("pskcrypto");
+
+const randSize = require("./constants").transactionIdLength;
+const {persistTransaction, getTransaction, getWorkerScript} = require("./TransactionUtils");
+
 function TransactionsManager(){
-	const serverConfig = require("apihub").getServerConfig();
 	const config = serverConfig.endpointsConfig["dsu-wizard"];
-
-	const WorkerPoolManager = require("./WorkerPoolManager.js");
-
-	const {persistTransaction, getTransaction, getWorkerScript} = require("./TransactionUtils");
 
 	const numberOfWorkers = config.workers || 5;
 	const poolManager = new WorkerPoolManager(getWorkerScript(), numberOfWorkers);
@@ -13,15 +15,13 @@ function TransactionsManager(){
 	this.getTransaction = getTransaction;
 
 	this.beginTransaction = function(req, callback){
-		const crypto = require("pskcrypto");
-		const randSize = require("./constants").transactionIdLength;
-
 		let transactionId = crypto.randomBytes(randSize).toString('hex');
 		let transaction = {
 			id: transactionId,
 			commands: [],
 			context: {
 				result: {},
+				dlDomain: req.params.domain,
 				domain: req.params.domain,
 				options: {useSSIAsIdentifier: false}
 			}
