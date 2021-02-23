@@ -1,6 +1,6 @@
-const transactionManager = require("./TransactionManager");
-
 function initWizard(server) {
+	const transactionManager = require("./TransactionManager");
+
 	server.post(`/dsu-wizard/:domain/begin`, (req, res)=>{
 		transactionManager.beginTransaction(req, (err, transactionId)=>{
 			if(err){
