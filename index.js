@@ -1,5 +1,4 @@
 function initWizard(server) {
-
 	const transactionManager = require("./TransactionManager");
 
 	server.post(`/dsu-wizard/:domain/begin`, (req, res)=>{

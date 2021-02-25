@@ -22,6 +22,7 @@ function TransactionsManager(){
 			commands: [],
 			context: {
 				result: {},
+				dlDomain: req.params.domain,
 				domain: req.params.domain,
 				options: {useSSIAsIdentifier: false}
 			}
