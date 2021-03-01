@@ -156,7 +156,7 @@ function initializeWorker(){
 
 			let resolverMethod = 'loadDSU';
 			if (typeof transaction.context.keySSI === "undefined") {
-				transaction.context.keySSI = keyssi.buildTemplateSeedSSI(transaction.context.domain);
+				transaction.context.keySSI = keyssi.createTemplateSeedSSI(transaction.context.domain);
 				resolverMethod = 'createDSU';
 				newKeySSIJustInitialised = true;
 			}
