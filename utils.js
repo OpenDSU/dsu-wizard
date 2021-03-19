@@ -18,19 +18,6 @@ function bodyParser(req, callback) {
 function formDataParser(req, callback) {
     const buffers = [];
     let formData = [];
-    let currentFormItem;
-    let currentBoundary;
-    let defaultItem = {
-        bufferStartIndex: 0,
-        bufferEndIndex: 0,
-        increaseBothBuffers: (size) => {
-            currentFormItem.bufferStartIndex += size;
-            currentFormItem.bufferEndIndex += size;
-        },
-        increaseEndBuffer: (size) => {
-            currentFormItem.bufferEndIndex += size;
-        }
-    }
 
     req.on('data', function (dataChunk) {
         buffers.push(dataChunk);
@@ -38,7 +25,7 @@ function formDataParser(req, callback) {
 
     req.on('end', function () {
         const dataBuf = $$.Buffer.concat(buffers);
-        formParser(dataBuf);
+        newFormParser(dataBuf, retrieveBoundaryIdentifier(req));
         req.formData = formData;
         callback(undefined, req.formData);
     });
@@ -47,66 +34,90 @@ function formDataParser(req, callback) {
         callback(err);
     });
 
-    function formParser(data) {
-        let dataAsString = data.toString();
-        let dataArray = dataAsString.split(/[\r\n]+/g);
+    function retrieveBoundaryIdentifier(req){
+        let contentType = req.headers["content-type"];
+        if(!contentType){
+            return;
+        }
+        const identifier = "boundary=";
+        let boundaryIndex = contentType.indexOf(identifier);
 
-        currentFormItem = defaultItem;
-        for (let dataLine of dataArray) {
-            let lineHandled = false;
-            if (dataLine.indexOf('------') === 0) {
-                if (typeof currentBoundary === "undefined") {
-                    //we got a new boundary
-                    currentBoundary = dataLine;
+        if(boundaryIndex !== -1){
+            return contentType.slice(boundaryIndex+identifier.length);
+        }
+    }
 
-                    currentFormItem.increaseBothBuffers(dataLine.length + 2)
+    function newFormParser(data, boundary) {
+        //console.log("Read boundary", boundary);
+        let boundaryIndexes = [];
+        let offset = 0;
+        let indexCorrection = 0;
 
-                    lineHandled = true;
-                } else if (dataLine.indexOf(currentBoundary) + '--' !== -1) {
-                    //we found a boundary end
-                    currentBoundary = undefined;
+        while(true){
+            let index = data.indexOf(boundary, offset);
+            if(offset===0 && index > 0){
+                //this mechanism is trying to solve the issue when into the header the boundary starts with "----" and
+                // into the body starts with "------"
+                indexCorrection = index;
+            }
+            if(index !== -1){
+                boundaryIndexes.push(index-indexCorrection);
+                offset = index + boundary.length + indexCorrection;
+            }else{
+                //we need to escape this index discovery loop because we can't find any other boundary so we are done
+                break;
+            }
+        }
 
-                    //Due to encoding method of the characters, in some scenarios we will need to prevent the lose of bytes
-                    //That's why in the final boundary we add them back
-                    currentFormItem.increaseEndBuffer(data.byteLength - dataAsString.length);
+        let formItems = [];
+        for(let i=0; i<boundaryIndexes.length; i++){
+            if(i+1 >= boundaryIndexes.length){
+                break;
+            }
+            let f = data.slice(boundaryIndexes[i]+indexCorrection+boundary.length+"\r\n".length, boundaryIndexes[i+1]);
 
-                    let content = data.slice(currentFormItem.bufferStartIndex + 2, currentFormItem.bufferEndIndex + 2);
-                    //if there is a trailing carriage return character we try to remove it
-                    if(content && content[content.length-1] === Buffer.from("\r")[0]){
-                        content = content.slice(0, -1);
+            //console.log("item", f.toString());
+            formItems.push(f);
+        }
+
+        for(let i=0; i<formItems.length; i++){
+            let parsedItem = {};
+            let formItem = formItems[i];
+
+            let testContentDisposition = formItem.indexOf("Content-Disposition:") === 0;
+
+            if(testContentDisposition){
+                //we extract the content disposition until the first appearance of the group "\r\n"
+                let contentDisposition = formItem.slice(0, formItem.indexOf("\r\n"));
+                formItem = formItem.slice(contentDisposition.length+"\r\n".length);
+
+                let metas = contentDisposition.toString().split("; ");
+                metas.forEach(meta=>{
+                    if(meta.indexOf("name=") === 0){
+                        parsedItem.type = meta.replace("name=", "").replace(/\"|'/g, "");
                     }
-
-                    currentFormItem = {
-                        type: currentFormItem.type,
-                        content
+                    if(meta.indexOf("filename=") === 0){
+                        parsedItem.fileName = meta.replace("filename=", "").replace(/\"|'/g, "");
                     }
+                })
+            }
 
-                    //we add the formItem to formData and consider that is done
-                    formData.push(currentFormItem);
+            let testContentType = formItem.indexOf("Content-Type:") === 0;
 
-                    currentFormItem = defaultItem;
-                    lineHandled = true;
-                }
-            }
-            if (dataLine.indexOf('Content-Disposition:') !== -1) {
-                const formItemMeta = dataLine.split("; ");
-                for (let meta of formItemMeta) {
-                    if (meta.indexOf("name=") === 0) {
-                        currentFormItem.type = meta.replace("name=", "").replace(/\"|'/g, "");
-                        break;
-                    }
-                }
+            if(testContentType){
+                let contentType = formItem.slice(0, formItem.indexOf("\r\n"));
+                formItem = formItem.slice(contentType.length+"\r\n".length);
 
-                currentFormItem.increaseBothBuffers(dataLine.length + 2)
-                lineHandled = true;
+                parsedItem.contentType = contentType.toString().replace("Content-Type: ", "").replace(/\r\n/g, "");
             }
-            if (dataLine.indexOf('Content-Type:') !== -1) {
-                currentFormItem.increaseBothBuffers(dataLine.length + 2)
-                lineHandled = true;
-            }
-            if (!lineHandled) {
-                currentFormItem.increaseEndBuffer(dataLine.length + 1)
-            }
+
+            //no matter if content type line exists or not there is a \r\n before the content
+            formItem = formItem.slice("\r\n".length);
+
+            parsedItem.content = formItem.slice(0, formItem.byteLength-"\r\n".length);
+            //console.log("ParsedItem", parsedItem);
+
+            formData.push(parsedItem);
         }
     }
 }
