@@ -1,13 +1,4 @@
 function Copy(server) {
-    const pathName = "path";
-    const path = require(pathName);
-    const fsName = "fs";
-    const fs = require(fsName);
-    const osName = "os";
-    const os = require(osName);
-
-    const utils = require("../utils");
-
     function createCopyCommand(src, dest) {
         const command = {
             execute: function (context, callback) {
