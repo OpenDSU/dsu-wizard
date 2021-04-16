@@ -137,10 +137,10 @@ function initializeWorker(){
 					}
 				}
 
-				command = command.method(...command.args);
-				command.execute(transaction.context, (err) => {
+				let commandMethod = command.method(...command.args);
+				commandMethod.execute(transaction.context, (err) => {
 					if (err) {
-						return callback(new Error(`Failed to execute command`, err));
+						return callback(new Error(`Failed to execute command ${command.type} with args [${command.args}]`, err));
 					}
 
 					executeCommand();
