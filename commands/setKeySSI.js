@@ -17,6 +17,7 @@ function setKeySSI(server){
 				}
 				transaction.context.keySSI = req.body;
 				transaction.context.options.useSSIAsIdentifier = true;
+				transaction.context.forceNewDSU = req.headers['x-force-dsu-create'];
 				transactionManager.persistTransaction(transaction, (err) => {
 					if (err) {
 						return callback(err);
