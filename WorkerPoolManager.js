@@ -82,6 +82,10 @@ function WorkerPoolManager(script, workerLimit = 5){
 			function errorHandler(err){
 				//console.log("Caught error", err);
 				worker.off("error", errorHandler);
+				//if the worker is in unstable state is better to remove it from the workers list
+				workers[worker.threadId] = undefined;
+				delete workers[worker.threadId];
+
 				deliverMessage(err);
 			}
 
