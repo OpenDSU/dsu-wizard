@@ -1,6 +1,6 @@
 function TransactionsManager(){
 	const serverConfig = require("apihub").getServerConfig();
-	const config = serverConfig.endpointsConfig["dsu-wizard"];
+	const config = serverConfig.componentsConfig["dsu-wizard"];
 
 	const WorkerPoolManager = require("./WorkerPoolManager.js");
 
