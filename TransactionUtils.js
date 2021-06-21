@@ -1,5 +1,5 @@
 const serverConfig = require("apihub").getServerConfig();
-const config = serverConfig.endpointsConfig["dsu-wizard"];
+const config = serverConfig.componentsConfig["dsu-wizard"];
 
 function persistTransaction(transaction, callback){
 	const fs = require("fs");
@@ -223,7 +223,7 @@ function getWorkerScript(){
 	let script = "";
 
 	script += "const serverConfig = JSON.parse(\'"+JSON.stringify(serverConfig)+"\'); \n";
-	script += "const config = serverConfig.endpointsConfig[\"dsu-wizard\"]; \n";
+	script += "const config = serverConfig.componentsConfig[\"dsu-wizard\"]; \n";
 	script += `${getTransaction.toString()} ${getFileForTransaction.toString()} (${initializeWorker.toString()})()`;
 
 	return script;
